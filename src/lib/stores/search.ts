@@ -1,0 +1,72 @@
+import type { Ingredient, SearchableIngredient } from '../../../types/ingredients'
+import _ from 'lodash'
+
+export type SortBy = {
+	category: boolean,
+	name: boolean,
+	costPer: boolean,
+	reverse: boolean,
+	showUndefined: boolean
+}
+
+export const searchableIngredientsStructure = (ingredients: Ingredient[]) => {
+	const data = ingredients.map(ingredient => {
+		return {
+			...ingredient,
+			searchKeywords: `${ingredient.name} ${ingredient.category}`,
+			editable: false
+		}
+	})
+	
+	return {
+		data,
+		filtered: data,
+		search: "",
+		sortBy: {
+			category: false,
+			name: false,
+			costPer: false,
+			reverse: false,
+			showUndefined: false
+		}
+	}
+}
+
+export const searchHandler = (search: string, ingredients: SearchableIngredient[]) => {
+	const searchTerm = search.toLowerCase() || ""
+
+	// Search filter
+	const filteredIngredients = ingredients.filter((item) => {	
+			return item.searchKeywords.toLowerCase().includes(searchTerm)
+	}).reverse()
+
+	return filteredIngredients
+
+	// const sortByArray = _.map(store.sortBy, (value, key) => {
+	// 	if (value)
+	// 		return key
+	// }).filter(boolean => boolean)
+	
+	// if (sortByArray.length > 0){
+	// 	const sortedDefinedArrays = store.filtered.reduce((r, current) => {
+	// 		const sortByIngredientProperties = sortByArray.filter(e => e !== 'reverse' && e !== 'showUndefined')
+
+	// 		const defined = sortByIngredientProperties.map(property => {
+	// 			return Boolean(current[property])
+	// 		})
+
+	// 		defined.every(bool => bool)
+	// 		? r.defined.push(current)
+	// 		: r.undefined.push(current)
+
+	// 		return r
+	// 	}, {
+	// 		defined: [],
+	// 		undefined: []
+	// 	});
+		
+	// 	store.filtered = _.sortBy(sortedDefinedArrays.defined, sortByArray)
+	// 	if (store.sortBy.reverse) store.filtered = store.filtered.reverse()
+	// 	if (store.sortBy.showUndefined) store.filtered = store.filtered.concat(sortedDefinedArrays.undefined)
+	// }
+}

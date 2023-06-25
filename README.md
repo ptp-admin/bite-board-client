@@ -1,3 +1,3 @@
 # bite-board-client
 
-test
+Svelte client for Bite Board.

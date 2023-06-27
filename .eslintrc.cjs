@@ -7,7 +7,10 @@ module.exports = {
 		'prettier'
 	],
 	parser: '@typescript-eslint/parser',
-	plugins: ['@typescript-eslint'],
+	plugins: [
+		'svelte3',
+		'@typescript-eslint'
+	],
 	parserOptions: {
 		sourceType: 'module',
 		ecmaVersion: 2020,
@@ -22,6 +25,7 @@ module.exports = {
 		{
 			files: ['*.svelte'],
 			parser: 'svelte-eslint-parser',
+			processor: 'svelte3/svelte3',
 			parserOptions: {
 				parser: '@typescript-eslint/parser'
 			}

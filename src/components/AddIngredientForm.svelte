@@ -90,7 +90,7 @@
 		{/if}
 	</div>
 
-	<button>Add</button>
+	<button>{$form.id ? 'Update' : 'Add'}</button>
 
 	{#if action === '?/create'}
 		<p><b>Preview:</b></p>

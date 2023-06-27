@@ -9,6 +9,12 @@ export type SortBy = {
 	showUndefined: boolean
 }
 
+export type SearchableIngredientsStructure = {
+	data: SearchableIngredient[],
+	filtered: SearchableIngredient[],
+	sortBy: SortBy
+}
+
 export const searchableIngredientsStructure = (ingredients: Ingredient[]) => {
 	const data = ingredients.map(ingredient => {
 		return {
@@ -21,7 +27,6 @@ export const searchableIngredientsStructure = (ingredients: Ingredient[]) => {
 	return {
 		data,
 		filtered: data,
-		search: "",
 		sortBy: {
 			category: false,
 			name: false,
@@ -32,23 +37,21 @@ export const searchableIngredientsStructure = (ingredients: Ingredient[]) => {
 	}
 }
 
-export const searchHandler = (search: string, ingredients: SearchableIngredient[]) => {
+export const searchHandler = (search: string, ingredients: SearchableIngredientsStructure) => {
 	const searchTerm = search.toLowerCase() || ""
 
 	// Search filter
-	const filteredIngredients = ingredients.filter((item) => {	
+	const filteredIngredients = ingredients.data.filter((item) => {	
 			return item.searchKeywords.toLowerCase().includes(searchTerm)
 	}).reverse()
 
-	return filteredIngredients
-
-	// const sortByArray = _.map(store.sortBy, (value, key) => {
+	// const sortByArray = _.map(ingredients.sortBy, (value, key) => {
 	// 	if (value)
 	// 		return key
 	// }).filter(boolean => boolean)
 	
 	// if (sortByArray.length > 0){
-	// 	const sortedDefinedArrays = store.filtered.reduce((r, current) => {
+	// 	const sortedDefinedArrays = ingredients.filtered.reduce((r, current) => {
 	// 		const sortByIngredientProperties = sortByArray.filter(e => e !== 'reverse' && e !== 'showUndefined')
 
 	// 		const defined = sortByIngredientProperties.map(property => {
@@ -65,8 +68,9 @@ export const searchHandler = (search: string, ingredients: SearchableIngredient[
 	// 		undefined: []
 	// 	});
 		
-	// 	store.filtered = _.sortBy(sortedDefinedArrays.defined, sortByArray)
-	// 	if (store.sortBy.reverse) store.filtered = store.filtered.reverse()
-	// 	if (store.sortBy.showUndefined) store.filtered = store.filtered.concat(sortedDefinedArrays.undefined)
+	// 	ingredients.filtered = _.sortBy(sortedDefinedArrays.defined, sortByArray)
+	// 	if (ingredients.sortBy.reverse) ingredients.filtered = ingredients.filtered.reverse()
+	// 	if (ingredients.sortBy.showUndefined) ingredients.filtered = ingredients.filtered.concat(sortedDefinedArrays.undefined)
 	// }
+	return filteredIngredients
 }

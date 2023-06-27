@@ -40,6 +40,9 @@ devDependencies:
   eslint-plugin-svelte:
     specifier: ^2.26.0
     version: 2.31.0(eslint@8.43.0)(svelte@3.59.1)
+  eslint-plugin-svelte3:
+    specifier: ^4.0.0
+    version: 4.0.0(eslint@8.43.0)(svelte@3.59.1)
   prettier:
     specifier: ^2.8.0
     version: 2.8.8
@@ -918,6 +921,16 @@ packages:
       eslint: '>=7.0.0'
     dependencies:
       eslint: 8.43.0
+    dev: true
+
+  /eslint-plugin-svelte3@4.0.0(eslint@8.43.0)(svelte@3.59.1):
+    resolution: {integrity: sha512-OIx9lgaNzD02+MDFNLw0GEUbuovNcglg+wnd/UY0fbZmlQSz7GlQiQ1f+yX0XvC07XPcDOnFcichqI3xCwp71g==}
+    peerDependencies:
+      eslint: '>=8.0.0'
+      svelte: ^3.2.0
+    dependencies:
+      eslint: 8.43.0
+      svelte: 3.59.1
     dev: true
 
   /eslint-plugin-svelte@2.31.0(eslint@8.43.0)(svelte@3.59.1):

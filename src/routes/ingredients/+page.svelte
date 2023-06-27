@@ -4,9 +4,12 @@
 
 	import AddIngredientForm from '../../components/AddIngredientForm.svelte';
 	import { searchHandler } from '../../lib/stores/search';
+	import { afterUpdate } from 'svelte/internal';
 	import _ from 'lodash'
 
 	export let data: PageData;
+
+	let search = ''
 
 	const emptyIngredient: EmptyIngredient = { 
 		name: '',
@@ -16,6 +19,14 @@
 		measurementUnit: '',
 		editable: false
 	}
+
+	const handleSearch = () => {
+		data.searchableIngredients.filtered = searchHandler(search, data.searchableIngredients)
+	}
+
+	afterUpdate(() => {
+		handleSearch()
+	});
 </script>
 
 <h2>Add Ingredient</h2>
@@ -32,20 +43,21 @@
 <input
 	type="search"
 	placeholder="Search ingredients"
-	bind:value={data.searchableIngredients.search}
-	on:input={() => data.searchableIngredients.filtered = searchHandler(data.searchableIngredients.search, data.searchableIngredients.data)}
+	bind:value={search}
+	on:input={() => handleSearch()}
 />
 <!-- 
 	TODO: re-implement these checkboxes
 	<b>Sort by:</b>
-	<input type=checkbox bind:checked={$searchStore.sortBy.category}> Category |
+	<input type=checkbox bind:checked={data.searchableIngredients.sortBy.category}> Category |
 	<input type=checkbox bind:checked={$searchStore.sortBy.name}> Name |
 	<input type=checkbox bind:checked={$searchStore.sortBy.costPer}> Cost |
 	<input type=checkbox bind:checked={$searchStore.sortBy.reverse}> Reverse |
-	<input type=checkbox bind:checked={$searchStore.sortBy.showUndefined}>Show Undefined
--->
+	<input type=checkbox bind:checked={$searchStore.sortBy.showUndefined}>Show Undefined -->
 
-<p><b>{data.searchableIngredients.filtered.length} results</b></p>
+
+<p><b>{data.searchableIngredients.filtered.length} {data.searchableIngredients.filtered.length === 1 ? 'result' : 'results'}</b></p>
+
 {#each data.searchableIngredients.filtered as ingredient}
 	{#if !ingredient.editable}
 	<p>

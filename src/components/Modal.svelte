@@ -1,20 +1,15 @@
 <script lang="ts">
-	export let showModal: any; // boolean
-	export let form;
+	export let showModal: boolean;
 
 	let dialog: any; // HTMLDialogElement
 
 	$: if (dialog && showModal) dialog.showModal();
-	$: if (dialog && !showModal) dialog.close();
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <dialog
 	bind:this={dialog}
-	on:close={() => {
-		(showModal = false)
-		if ($form.id) history.back()
-	} }
+	on:close={() => (showModal = false)}
 	on:click|self={() => dialog.close()}
 >
 	<div on:click|stopPropagation>
@@ -22,8 +17,7 @@
 		<hr />
 		<slot />
 		<hr />
-		<!-- svelte-ignore a11y-autofocus -->
-		<button autofocus on:click={() => dialog.close()}>Close</button>
+		<slot name="button" /><button on:click={() => dialog.close()}>cancel</button>
 	</div>
 </dialog>
 

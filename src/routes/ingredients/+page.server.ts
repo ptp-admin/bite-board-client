@@ -56,18 +56,6 @@ export const actions = {
 		return {success: true, form}
   },
 
-  // delete: async ({request}) => {
-  //   const formData = await request.formData()
-  //   const id = formData.get('id')
-
-  //   await axiosHandler({
-  //     method: 'delete',
-  //     route: `/ingredients/${id}`
-  //   })
-    
-  //   return {success: true}
-  // },
-
   update: async (event) => {
     const form = await superValidate(event, newIngredientSchema)
 
@@ -82,5 +70,17 @@ export const actions = {
 			data: form.data
 		})
 		return {success: true, form}
+  },
+
+	delete: async (event) => {
+    const form = await superValidate(event, newIngredientSchema)
+    const id = form.data.id
+		
+    await axiosHandler({
+      method: 'delete',
+      route: `/ingredients/${id}`
+    })
+    
+    return {success: true, form}
   }
 }

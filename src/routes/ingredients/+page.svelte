@@ -1,16 +1,15 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import type { EmptyIngredient, Ingredient, SearchableIngredient } from '../../../types/ingredients';
+	import type { SearchableIngredient } from '../../../types/ingredients';
 
-	import AddIngredientForm from '../../components/AddIngredientForm.svelte';
+	import IngredientForm from '../../components/IngredientForm.svelte';
 	import { createSearchStore, searchHandler, createSearchableIngredients } from '../../lib/stores/search';
 	import { beforeUpdate, onDestroy, onMount } from 'svelte/internal';
 	import axios from 'axios';
 	import _ from 'lodash'
+	import DeleteIngredientButton from '../../components/DeleteIngredientButton.svelte';
 
 	export let data: PageData;
-
-
 
 	const searchStore = createSearchStore(data.ingredients)
 
@@ -24,34 +23,44 @@
 		const pageIngredients = createSearchableIngredients(data.ingredients)
 		const storeIngredients = $searchStore.data
 
-		const compareStoreAndPageIngredients = (storeIngredients: SearchableIngredient[], pageIngredients: SearchableIngredient[]) => {
-			// Map arrays and return objects with only specific fields for comparison
-			const makeIngredientsComparable = (ingredients: SearchableIngredient[]) => {
-				return ingredients.map(({	name,	category,	costPer, searchKeywords	}) => {
-						return { name, category, costPer, searchKeywords }
-			})}
-
-			// Convert arrays to JSON and compare
-			return (JSON.stringify(makeIngredientsComparable(storeIngredients)) === JSON.stringify(makeIngredientsComparable(pageIngredients)))
-		}
-
-		if(compareStoreAndPageIngredients(storeIngredients, pageIngredients) === false){
-			// Preserve the state of ingredient.editable for the update
-			const minLength = Math.min(pageIngredients.length, storeIngredients.length);
-
-			// Update select properties from pageIngredients to storeIngredients
-			_.forEach(_.slice(pageIngredients, 0, minLength), (objectA, index) => {
-				_.merge(storeIngredients[index], _.pick(objectA, ['name', 'category', 'costPer', 'searchKeywords']));
-			});
-
-			// If pageIngredients is longer, append remaining elements to storeIngredients
-			if (pageIngredients.length > storeIngredients.length) {
-				const remainingElements = _.slice(pageIngredients, minLength);
-				storeIngredients.push(...remainingElements);
-			}
+		// Check if an ingredient was deleted
+		if (storeIngredients.length > pageIngredients.length){
+			const deletedIngredient = storeIngredients.filter(storeIngredient => {
+				const exists = pageIngredients.some(pageIngredient => pageIngredient.id === storeIngredient.id)
+				return !exists
+			})[0]
+			_.remove(storeIngredients, { id: deletedIngredient.id });
 			
-			// Update data in store
 			$searchStore.data = storeIngredients
+		} else {
+			const compareStoreAndPageIngredients = (storeIngredients: SearchableIngredient[], pageIngredients: SearchableIngredient[]) => {
+				// Map arrays and return objects with only specific fields for comparison
+				const makeIngredientsComparable = (ingredients: SearchableIngredient[]) => {
+					return ingredients.map(({	name,	category,	costPer, searchKeywords	}) => {
+							return { name, category, costPer, searchKeywords }
+				})}
+
+				// Convert arrays to JSON and compare
+				return (JSON.stringify(makeIngredientsComparable(storeIngredients)) === JSON.stringify(makeIngredientsComparable(pageIngredients)))
+			}
+			// Check if an ingredient was added or updated
+			if (compareStoreAndPageIngredients(storeIngredients, pageIngredients) === false){
+				const minLength = Math.min(pageIngredients.length, storeIngredients.length);
+
+				// Update select properties from pageIngredients to storeIngredients but preserve the state of ingredient.editable for the UI
+				_.forEach(_.slice(pageIngredients, 0, minLength), (objectA, index) => {
+					_.merge(storeIngredients[index], _.pick(objectA, ['name', 'category', 'costPer', 'searchKeywords']));
+				});
+
+				// If pageIngredients is longer, append remaining elements to storeIngredients
+				if (pageIngredients.length > storeIngredients.length) {
+					const remainingElements = _.slice(pageIngredients, minLength);
+					storeIngredients.push(...remainingElements);
+				}
+				
+				// Update the page
+				$searchStore.data = storeIngredients
+			}
 		}
 	});
 
@@ -71,7 +80,7 @@
 
 <h2>Add Ingredient</h2>
 
-<AddIngredientForm
+<IngredientForm
 	formId={'add'}
 	data={data.form}
 	action={'?/create'}
@@ -103,13 +112,20 @@
 			ingredient.editable = !ingredient.editable}}>edit</button>
 	</p>
 	{:else}
-		<AddIngredientForm
+		<IngredientForm
 			formId={ingredient.id.toString()}
 			data={data.form}
 			action={'?/update'}
 			{ingredient}
 			{measurementUnitOptions}
 		/>
-		<button on:click={() => ingredient.editable = !ingredient.editable}>cancel</button>
+		<DeleteIngredientButton
+			{ingredient}
+			data={data.form}
+			formId={ingredient.id.toString()}
+		/>
+		<div>
+			<button on:click={() => ingredient.editable = !ingredient.editable}>cancel</button>
+		</div>
 	{/if}
 {/each}

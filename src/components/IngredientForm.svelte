@@ -2,14 +2,14 @@
   import type { SuperValidated } from 'sveltekit-superforms';
 	import type { NewIngredientSchema } from '../schemas';
 
-	import { afterUpdate, beforeUpdate } from 'svelte';
+	import { beforeUpdate } from 'svelte';
   import { superForm } from 'sveltekit-superforms/client'
 
   export let data: SuperValidated<NewIngredientSchema>;
 	export let action: string;
 	export let formId: string;
-	export let ingredient: any = null;	// TODO update this type
 	export let measurementUnitOptions: string[];
+	export let ingredient: any = null;	// TODO update this type
 
 	const { form, errors, enhance } = superForm(data, {
 		id: formId,
@@ -19,15 +19,15 @@
 
 	if (!ingredient) {
 		form.set({ 
-		name: '',
-		category: '',
-		costPer: 0,
-		numberOf: 0,
-		measurementUnit: '',
-	})
+			name: '',
+			category: '',
+			costPer: 0,
+			numberOf: 0,
+			measurementUnit: '',
+		})
 	} 
 
-	afterUpdate(() => {if (ingredient) {
+	beforeUpdate(() => {if (ingredient) {
 		form.set(ingredient)
 	}})
 </script>
@@ -89,7 +89,7 @@
 		{/if}
 	</div>
 
-	<button on:click={() => ingredient.editable = false}>{$form.id ? 'Update' : 'Add'}</button>
+	<button on:click={() => ingredient.editable = false}>{$form.id ? 'update' : 'add'}</button>
 
 	{#if action === '?/create'}
 		<p><b>Preview:</b></p>

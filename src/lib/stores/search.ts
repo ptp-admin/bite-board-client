@@ -1,6 +1,8 @@
 import type { Ingredient, SearchableIngredient } from '../../../types/ingredients'
 import _ from 'lodash'
 
+import { writable } from 'svelte/store'
+
 export type SortBy = {
 	category: boolean,
 	name: boolean,
@@ -12,8 +14,10 @@ export type SortBy = {
 export type SearchableIngredientsStructure = {
 	data: SearchableIngredient[],
 	filtered: SearchableIngredient[],
-	sortBy: SortBy
+	sortBy?: SortBy
 }
+
+export const searchStore = writable('')
 
 export const searchableIngredientsStructure = (ingredients: Ingredient[]) => {
 	const data = ingredients.map(ingredient => {

@@ -1,15 +1,15 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import type { EmptyIngredient } from '../../../types/ingredients';
+	import type { EmptyIngredient, SearchableIngredient } from '../../../types/ingredients';
 
 	import AddIngredientForm from '../../components/AddIngredientForm.svelte';
-	import { searchHandler } from '../../lib/stores/search';
-	import { afterUpdate } from 'svelte/internal';
+	import { searchStore, searchHandler, searchableIngredientsStructure, type SearchableIngredientsStructure } from '../../lib/stores/search';
+	import { beforeUpdate } from 'svelte/internal';
 	import _ from 'lodash'
 
 	export let data: PageData;
 
-	let search = ''
+	let searchableIngredients: SearchableIngredientsStructure = { data: [], filtered: []}
 
 	const emptyIngredient: EmptyIngredient = { 
 		name: '',
@@ -20,12 +20,16 @@
 		editable: false
 	}
 
-	const handleSearch = () => {
-		data.searchableIngredients.filtered = searchHandler(search, data.searchableIngredients)
-	}
+	searchStore.subscribe((value) => {
+		searchableIngredients.filtered = searchHandler(value, searchableIngredients)
+	});
 
-	afterUpdate(() => {
-		handleSearch()
+	beforeUpdate(() => {
+		// Create our searchable ingredients object from data returned from the backend
+		searchableIngredients = searchableIngredientsStructure(data.ingredients)
+
+		// Apply necessary filtering - this prevents the page from destroying whatever search parameters a user has entered when adding/updating ingredients
+		searchableIngredients.filtered = searchHandler($searchStore, searchableIngredients)
 	});
 </script>
 
@@ -43,8 +47,7 @@
 <input
 	type="search"
 	placeholder="Search ingredients"
-	bind:value={search}
-	on:input={() => handleSearch()}
+	bind:value={$searchStore}
 />
 <!-- 
 	TODO: re-implement these checkboxes
@@ -56,9 +59,9 @@
 	<input type=checkbox bind:checked={$searchStore.sortBy.showUndefined}>Show Undefined -->
 
 
-<p><b>{data.searchableIngredients.filtered.length} {data.searchableIngredients.filtered.length === 1 ? 'result' : 'results'}</b></p>
+<p><b>{searchableIngredients.filtered.length} {searchableIngredients.filtered.length === 1 ? 'result' : 'results'}</b></p>
 
-{#each data.searchableIngredients.filtered as ingredient}
+{#each searchableIngredients.filtered as ingredient}
 	{#if !ingredient.editable}
 	<p>
 		{ingredient.name} ({ingredient.category}) - ${ingredient.costPer}/{ingredient.numberOf}{ingredient.measurementUnit}

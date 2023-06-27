@@ -29,6 +29,7 @@ export const load = async (event) => {
 		const searchableIngredients = searchableIngredientsStructure(ingredients);
     return {
 			searchableIngredients,
+			ingredients,
 			form
 		}
   }

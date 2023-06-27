@@ -17,12 +17,41 @@ export type SearchableIngredientsStructure = {
 	sortBy?: SortBy
 }
 
-export const searchStore = writable(
-	{
+export type SearchStore = {
+	data: SearchableIngredient[],
+	filtered: SearchableIngredient[],
+	searchTerm: string,
+	sortBy: SortBy
+}
+
+export const createSearchStore = (ingredients: Ingredient[]) => {
+	const data = createSearchableIngredients(ingredients)
+
+	const store = writable({
+		data,
+		filtered: data,
 		searchTerm: '',
-		sortBy: {}
-	}
-)
+		sortBy: {
+			category: false,
+			name: false,
+			costPer: false,
+			reverse: false,
+			showUndefined: false
+		}
+	})
+	
+	return store
+}
+
+export const createSearchableIngredients = (ingredients: Ingredient[]) => {
+	return ingredients.map(ingredient => {
+		return {
+			...ingredient,
+			searchKeywords: `${ingredient.name} ${ingredient.category}`,
+			editable: false
+		}
+	})
+}
 
 export const searchableIngredientsStructure = (ingredients: Ingredient[]) => {
 	const data = ingredients.map(ingredient => {
@@ -46,40 +75,40 @@ export const searchableIngredientsStructure = (ingredients: Ingredient[]) => {
 	}
 }
 
-export const searchHandler = (search: string, ingredients: SearchableIngredientsStructure) => {
-	const searchTerm = search.toLowerCase() || ""
+export const fakeSearchHandler = (store: SearchStore, ingredientData?: Ingredient[]) => {
+	if (ingredientData) store.data = createSearchableIngredients(ingredientData)
+	const searchTerm = store.searchTerm.toLowerCase() || ""
 
 	// Search filter
-	const filteredIngredients = ingredients.data.filter((item) => {	
+	store.filtered = store.data.filter((item) => {	
 			return item.searchKeywords.toLowerCase().includes(searchTerm)
 	}).reverse()
 
-	// const sortByArray = _.map(ingredients.sortBy, (value, key) => {
-	// 	if (value)
-	// 		return key
-	// }).filter(boolean => boolean)
+	const sortByArray = _.map(store.sortBy, (value, key) => {
+		if (value)
+			return key
+	}).filter(boolean => boolean)
 	
-	// if (sortByArray.length > 0){
-	// 	const sortedDefinedArrays = ingredients.filtered.reduce((r, current) => {
-	// 		const sortByIngredientProperties = sortByArray.filter(e => e !== 'reverse' && e !== 'showUndefined')
+	if (sortByArray.length > 0){
+		const sortedDefinedArrays = store.filtered.reduce((r, current) => {
+			const sortByIngredientProperties = sortByArray.filter(e => e !== 'reverse' && e !== 'showUndefined')
 
-	// 		const defined = sortByIngredientProperties.map(property => {
-	// 			return Boolean(current[property])
-	// 		})
+			const defined = sortByIngredientProperties.map(property => {
+				return Boolean(current[property])
+			})
 
-	// 		defined.every(bool => bool)
-	// 		? r.defined.push(current)
-	// 		: r.undefined.push(current)
+			defined.every(bool => bool)
+			? r.defined.push(current)
+			: r.undefined.push(current)
 
-	// 		return r
-	// 	}, {
-	// 		defined: [],
-	// 		undefined: []
-	// 	});
+			return r
+		}, {
+			defined: [],
+			undefined: []
+		});
 		
-	// 	ingredients.filtered = _.sortBy(sortedDefinedArrays.defined, sortByArray)
-	// 	if (ingredients.sortBy.reverse) ingredients.filtered = ingredients.filtered.reverse()
-	// 	if (ingredients.sortBy.showUndefined) ingredients.filtered = ingredients.filtered.concat(sortedDefinedArrays.undefined)
-	// }
-	return filteredIngredients
+		store.filtered = _.sortBy(sortedDefinedArrays.defined, sortByArray)
+		if (store.sortBy.reverse) store.filtered = store.filtered.reverse()
+		if (store.sortBy.showUndefined) store.filtered = store.filtered.concat(sortedDefinedArrays.undefined)
+	}
 }

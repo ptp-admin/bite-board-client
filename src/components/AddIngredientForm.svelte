@@ -90,7 +90,7 @@
 		{/if}
 	</div>
 
-	<button>{$form.id ? 'Update' : 'Add'}</button>
+	<button on:click={() => ingredient.editable = false}>{$form.id ? 'Update' : 'Add'}</button>
 
 	{#if action === '?/create'}
 		<p><b>Preview:</b></p>

@@ -1,15 +1,13 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import type { EmptyIngredient, SearchableIngredient } from '../../../types/ingredients';
+	import type { EmptyIngredient, Ingredient, SearchableIngredient } from '../../../types/ingredients';
 
 	import AddIngredientForm from '../../components/AddIngredientForm.svelte';
-	import { searchStore, searchHandler, searchableIngredientsStructure, type SearchableIngredientsStructure } from '../../lib/stores/search';
+	import { createSearchStore, fakeSearchHandler, createSearchableIngredients } from '../../lib/stores/search';
 	import { beforeUpdate } from 'svelte/internal';
 	import _ from 'lodash'
 
 	export let data: PageData;
-
-	let searchableIngredients: SearchableIngredientsStructure = { data: [], filtered: []}
 
 	const emptyIngredient: EmptyIngredient = { 
 		name: '',
@@ -20,16 +18,34 @@
 		editable: false
 	}
 
-	searchStore.subscribe((store) => {
-		searchableIngredients.filtered = searchHandler(store.searchTerm, searchableIngredients)
-	});
+	const fakeStore = createSearchStore(data.ingredients)
+
+	const unsubscribe = fakeStore.subscribe((store) => {
+		fakeSearchHandler(store)
+	})
 
 	beforeUpdate(() => {
-		// Create our searchable ingredients object from data returned from the backend
-		searchableIngredients = searchableIngredientsStructure(data.ingredients)
+		const compareStoreAndPageIngredients = (storeIngredients: SearchableIngredient[], pageIngredients: Ingredient[]) => {
+			const searchablePageIngredients = createSearchableIngredients(pageIngredients)
 
-		// Apply necessary filtering - this prevents the page from destroying whatever search parameters a user has entered when adding/updating ingredients
-		searchableIngredients.filtered = searchHandler($searchStore.searchTerm, searchableIngredients)
+			const makeIngredientsComparable = (ingredients: SearchableIngredient[]) => {
+				return ingredients.map(({name,
+						category,
+						costPer,
+						searchKeywords}) => {
+					return {
+						name,
+						category,
+						costPer,
+						searchKeywords
+					}
+			})}
+
+			return (JSON.stringify(makeIngredientsComparable(storeIngredients)) === JSON.stringify(makeIngredientsComparable(searchablePageIngredients)))
+		}
+
+		if(!compareStoreAndPageIngredients($fakeStore.data, data.ingredients))
+			$fakeStore.data = createSearchableIngredients(data.ingredients)
 	});
 </script>
 
@@ -47,21 +63,19 @@
 <input
 	type="search"
 	placeholder="Search ingredients"
-	bind:value={$searchStore.searchTerm}
+	bind:value={$fakeStore.searchTerm}
 />
-<!-- 
-	TODO: re-implement these checkboxes
-	<b>Sort by:</b>
-	<input type=checkbox bind:checked={data.searchableIngredients.sortBy.category}> Category |
-	<input type=checkbox bind:checked={$searchStore.sortBy.name}> Name |
-	<input type=checkbox bind:checked={$searchStore.sortBy.costPer}> Cost |
-	<input type=checkbox bind:checked={$searchStore.sortBy.reverse}> Reverse |
-	<input type=checkbox bind:checked={$searchStore.sortBy.showUndefined}>Show Undefined -->
 
+<b>Sort by:</b>
+<input type=checkbox bind:checked={$fakeStore.sortBy.category}> Category |
+<input type=checkbox bind:checked={$fakeStore.sortBy.name}> Name |
+<input type=checkbox bind:checked={$fakeStore.sortBy.costPer}> Cost |
+<input type=checkbox bind:checked={$fakeStore.sortBy.reverse}> Reverse |
+<input type=checkbox bind:checked={$fakeStore.sortBy.showUndefined}>Show Undefined
 
-<p><b>{searchableIngredients.filtered.length} {searchableIngredients.filtered.length === 1 ? 'result' : 'results'}</b></p>
+<p><b>{$fakeStore.filtered.length} {$fakeStore.filtered.length === 1 ? 'result' : 'results'}</b></p>
 
-{#each searchableIngredients.filtered as ingredient}
+{#each $fakeStore.filtered as ingredient}
 	{#if !ingredient.editable}
 	<p>
 		{ingredient.name} ({ingredient.category}) - ${ingredient.costPer}/{ingredient.numberOf}{ingredient.measurementUnit}

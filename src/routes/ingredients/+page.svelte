@@ -20,8 +20,8 @@
 		editable: false
 	}
 
-	searchStore.subscribe((value) => {
-		searchableIngredients.filtered = searchHandler(value, searchableIngredients)
+	searchStore.subscribe((store) => {
+		searchableIngredients.filtered = searchHandler(store.searchTerm, searchableIngredients)
 	});
 
 	beforeUpdate(() => {
@@ -29,7 +29,7 @@
 		searchableIngredients = searchableIngredientsStructure(data.ingredients)
 
 		// Apply necessary filtering - this prevents the page from destroying whatever search parameters a user has entered when adding/updating ingredients
-		searchableIngredients.filtered = searchHandler($searchStore, searchableIngredients)
+		searchableIngredients.filtered = searchHandler($searchStore.searchTerm, searchableIngredients)
 	});
 </script>
 
@@ -47,7 +47,7 @@
 <input
 	type="search"
 	placeholder="Search ingredients"
-	bind:value={$searchStore}
+	bind:value={$searchStore.searchTerm}
 />
 <!-- 
 	TODO: re-implement these checkboxes

@@ -17,7 +17,12 @@ export type SearchableIngredientsStructure = {
 	sortBy?: SortBy
 }
 
-export const searchStore = writable('')
+export const searchStore = writable(
+	{
+		searchTerm: '',
+		sortBy: {}
+	}
+)
 
 export const searchableIngredientsStructure = (ingredients: Ingredient[]) => {
 	const data = ingredients.map(ingredient => {

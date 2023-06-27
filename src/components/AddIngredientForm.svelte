@@ -8,7 +8,7 @@
   export let data: SuperValidated<NewIngredientSchema>;
 	export let action: string;
 	export let formId: string;
-	export let ingredient: any;	// TODO update this type
+	export let ingredient: any = null;	// TODO update this type
 	export let measurementUnitOptions: string[];
 
 	const { form, errors, enhance } = superForm(data, {

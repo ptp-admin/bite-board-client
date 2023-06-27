@@ -75,7 +75,7 @@ export const searchableIngredientsStructure = (ingredients: Ingredient[]) => {
 	}
 }
 
-export const fakeSearchHandler = (store: SearchStore, ingredientData?: Ingredient[]) => {
+export const searchHandler = (store: SearchStore, ingredientData?: Ingredient[]) => {
 	if (ingredientData) store.data = createSearchableIngredients(ingredientData)
 	const searchTerm = store.searchTerm.toLowerCase() || ""
 

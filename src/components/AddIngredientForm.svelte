@@ -2,15 +2,14 @@
   import type { SuperValidated } from 'sveltekit-superforms';
 	import type { NewIngredientSchema } from '../schemas';
 
-	import axios from 'axios';
-	import { onMount } from 'svelte';
+	import { afterUpdate, beforeUpdate } from 'svelte';
   import { superForm } from 'sveltekit-superforms/client'
 
-	// TODO update these types
   export let data: SuperValidated<NewIngredientSchema>;
 	export let action: string;
 	export let formId: string;
-	export let ingredient: any;
+	export let ingredient: any;	// TODO update this type
+	export let measurementUnitOptions: string[];
 
 	const { form, errors, enhance } = superForm(data, {
 		id: formId,
@@ -18,19 +17,19 @@
 		multipleSubmits: 'prevent'
 	})
 
-	// Populates form fields with ingredient data
-	form.set(ingredient)
+	if (!ingredient) {
+		form.set({ 
+		name: '',
+		category: '',
+		costPer: 0,
+		numberOf: 0,
+		measurementUnit: '',
+	})
+	} 
 
-	// Fetch the measurementUnitOptions list from the backend
-	let measurementUnitOptions = ['']
-	onMount(async () => {
-		try {
-			const response = await axios.get(`http://localhost:3456/ingredients/measurementUnits`);
-			measurementUnitOptions = response.data;
-		} catch (error) {
-			console.error('Error fetching measurementUnitOptions:', error);
-		}
-	});
+	afterUpdate(() => {if (ingredient) {
+		form.set(ingredient)
+	}})
 </script>
 
 <form 

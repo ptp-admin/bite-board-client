@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import type { SearchableIngredient } from '../../../types/ingredients';
+	import type { Ingredient } from '../../../types/ingredients';
 
 	import IngredientForm from '../../components/IngredientForm.svelte';
 	import { createSearchStore, searchHandler, createSearchableIngredients } from '../../lib/stores/search';
@@ -33,9 +33,9 @@
 			
 			$searchStore.data = storeIngredients
 		} else {
-			const compareStoreAndPageIngredients = (storeIngredients: SearchableIngredient[], pageIngredients: SearchableIngredient[]) => {
+			const compareStoreAndPageIngredients = (storeIngredients: Ingredient[], pageIngredients: Ingredient[]) => {
 				// Map arrays and return objects with only specific fields for comparison
-				const makeIngredientsComparable = (ingredients: SearchableIngredient[]) => {
+				const makeIngredientsComparable = (ingredients: Ingredient[]) => {
 					return ingredients.map(({	name,	category,	costPer, searchKeywords	}) => {
 							return { name, category, costPer, searchKeywords }
 				})}

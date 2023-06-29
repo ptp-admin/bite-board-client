@@ -1,4 +1,4 @@
-import type { Ingredient, SearchableIngredient } from '../../../types/ingredients'
+import type { Ingredient } from '../../../types/ingredients'
 import _ from 'lodash'
 
 import { writable } from 'svelte/store'
@@ -12,14 +12,14 @@ export type SortBy = {
 }
 
 export type SearchableIngredientsStructure = {
-	data: SearchableIngredient[],
-	filtered: SearchableIngredient[],
+	data: Ingredient[],
+	filtered: Ingredient[],
 	sortBy?: SortBy
 }
 
 export type SearchStore = {
-	data: SearchableIngredient[],
-	filtered: SearchableIngredient[],
+	data: Ingredient[],
+	filtered: Ingredient[],
 	searchTerm: string,
 	sortBy: SortBy
 }
@@ -106,7 +106,7 @@ export const searchHandler = (store: SearchStore, ingredientData?: Ingredient[])
 			defined: [],
 			undefined: []
 		});
-		
+
 		store.filtered = _.sortBy(sortedDefinedArrays.defined, sortByArray)
 		if (store.sortBy.reverse) store.filtered = store.filtered.reverse()
 		if (store.sortBy.showUndefined) store.filtered = store.filtered.concat(sortedDefinedArrays.undefined)

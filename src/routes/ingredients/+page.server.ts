@@ -1,6 +1,6 @@
 /** @type {import('./$types').PageServerLoad} */
 /** @type {import('./$types').Actions} */
-import type { Ingredient, DatabaseIngredient } from '../../../types/ingredients'
+import type { Ingredient } from '../../../types/ingredients'
 
 import { superValidate } from 'sveltekit-superforms/server'
 import { error, fail } from '@sveltejs/kit';
@@ -11,19 +11,7 @@ import { searchableIngredientsStructure } from '$lib/stores/search';
 export const load = async (event) => {
 	const form = await superValidate(event, newIngredientSchema);
   const response = await fetch('http://localhost:3456/ingredients')
-	const ingredientData = await response.json()
-
-	const ingredients: Ingredient[] = ingredientData.map((ingredient: DatabaseIngredient): Ingredient => {
-    return {
-        id: ingredient.id,
-        name: ingredient.name,
-        category: ingredient.category,
-        costPer: ingredient.cost_per,
-        measurementUnit: ingredient.measurement_unit,
-        numberOf: ingredient.number_of,
-				editable: false
-    };
-	});
+	const ingredients: Ingredient[] = await response.json()
 
   if (ingredients){
 		const searchableIngredients = searchableIngredientsStructure(ingredients);

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import type { Ingredient } from '../../types/data';
+	import type { Ingredient } from '../../../types/data';
 
 	import IngredientForm from '../../components/IngredientForm.svelte';
 	import { createSearchStore, searchHandler, createSearchableIngredients } from '../../lib/stores/search';

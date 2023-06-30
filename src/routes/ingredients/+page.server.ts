@@ -1,6 +1,5 @@
 import type { PageServerLoad } from './$types';
 import type { Ingredient } from '../../../types/data';
-
 import { superValidate } from 'sveltekit-superforms/server';
 import { error, fail } from '@sveltejs/kit';
 import { axiosHandler } from '../../lib/axiosHandler.js';

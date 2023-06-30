@@ -17,9 +17,9 @@ export interface RecipeIngredient extends Ingredient {
 }
 
 export interface Recipe {
-  id: number;
+  id?: number;
   name: string;
-  method?: string;
+  method: string;
   servings?: number;
   recipeIngredients?: RecipeIngredient[];
   costPerServe?: number;

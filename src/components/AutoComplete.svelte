@@ -64,19 +64,15 @@
     position: relative;
   }
 
-  /* .autocomplete-input input {
-    padding: 0.75rem;
-  } */
-
   .autocomplete-dropdown {
     position: absolute;
+		width: 93%;
     top: 100%;
     left: 0;
     right: 0;
     background-color: #f1f1f1;
     padding: 0.5rem;
     border-radius: 4px;
-    max-height: 200px;
     overflow-y: auto;
 		z-index: 100;
   }
@@ -96,12 +92,23 @@
 		flex-direction: row;
 		width: 100%
 	}
+
+	h3 {
+		margin: 0.25em 0;
+	}
+
+	input {
+		width: 95%;
+		margin-bottom: 1em;
+	}
+
+	.half-width {
+		width: 50%;
+	}
 </style>
 
 <div class="autocomplete-input">
-  <label for="grid-password">
-		Ingredients
-	</label>
+	<h3>Ingredients</h3>
   {#if searchResults.length > 0}
     <div class="autocomplete-dropdown">
       {#each searchResults as result, index (result.id)}

@@ -31,40 +31,60 @@
 
 <form method="POST" class="bg-gray-200 p-6" use:enhance>
 	<div class="flex-container">
-		<!-- Name -->
-		<div>
-			<label for="name">Name</label>
-			<input type="text" id="name" name="name" bind:value={$form.name} />
-			{#if $errors.name}
-				<small style="color: red">{$errors.name}</small>
-			{/if}
+		<!-- Left Side -->
+		<div class="half-width">
+			<div class="flex-container">
+				<!-- Name -->
+				<div class="half-width">
+					<label for="name"><h3>Name</h3></label>
+					<input type="text" id="name" name="name" bind:value={$form.name} />
+					{#if $errors.name}
+						<small style="color: red">{$errors.name}</small>
+					{/if}
+				</div>
+				<!-- Servings -->
+				<div class="half-width">
+					<label for="servings"><h3>Servings</h3></label>
+					<input type="text" id="servings" name="servings" bind:value={$form.servings} />
+					{#if $errors.servings}
+						<small style="color: red">{$errors.servings}</small>
+					{/if}
+				</div>
+			</div>
+			<!-- Ingredients -->
+			<AutoComplete {data} {form} />
+
+			<!-- Submit -->
+			<button>Add Recipe</button>
 		</div>
-		<!-- Servings -->
-		<div>
-			<label for="servings">Servings</label>
-			<input type="text" id="servings" name="servings" bind:value={$form.servings} />
-			{#if $errors.servings}
-				<small style="color: red">{$errors.servings}</small>
-			{/if}
+		<!-- Right Side -->
+		<div class="half-width">
+			<!-- Method -->
+			<div>
+				<label for="method"><h3>Method</h3></label>
+				<!-- <input name="method" type="hidden" value={method} /> -->
+				<Editor bind:value={$form.method} />
+			</div>
 		</div>
 	</div>
-
-	<!-- Method -->
-	<div>
-		<label for="method">Method</label>
-		<!-- <input name="method" type="hidden" value={method} /> -->
-		<Editor bind:value={$form.method} />
-	</div>
-
-	<AutoComplete {data} {form} />
-
-	<button>Add Recipe</button>
 </form>
 
 <style>
+	h3 {
+		margin: 0.25em 0;
+	}
+	input {
+		width: 90%
+	}
+
 	.flex-container {
 		display: flex;
 		flex-direction: row;
 		width: 100%;
+	}
+
+	.half-width {
+
+		width: 50%;
 	}
 </style>

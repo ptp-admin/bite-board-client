@@ -8,8 +8,9 @@ export const load = (async ({params}) => {
 		route: `/recipes/${params.id}`
 	})
 
-	// return if successful
-	if (recipe) return {recipe: recipe.data}
-	// error if not
-	throw error(404, 'Not found');
+	if (recipe) {
+		return {recipe: recipe.data}
+	} else {
+		throw error(404, 'Not found');
+	}
 }) satisfies PageServerLoad;

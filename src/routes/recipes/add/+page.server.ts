@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types';
-import { fail } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import { newRecipeSchema } from '../../../schemas';
 import { superValidate } from 'sveltekit-superforms/server';
 import { axiosHandler } from '../../../lib/axiosHandler';
@@ -33,7 +33,7 @@ export const actions = {
 			route: '/recipes',
 			data: recipe
 		});
-
-		return { success: true, form };
+		throw redirect(307, '/recipes');
+		// return { success: true, form };
 	}
 };

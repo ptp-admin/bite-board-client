@@ -28,6 +28,20 @@ export const newIngredientSchema = z.object({
 })
 export type NewIngredientSchema = typeof newIngredientSchema
 
+export const newRecipeIngredientSchema = z.object({
+	id: z
+    .coerce
+    .number(),
+	recipeNumberOf: z
+    .coerce
+    .number({invalid_type_error: "Unit must be a number"})
+    .nonnegative({ message: 'Must not me negative' }),
+  recipeMeasurementUnit: z
+    .string()
+		.optional()
+})
+export type NewRecipIngredientSchema = typeof newRecipeIngredientSchema
+
 export const newRecipeSchema = z.object({
   name: z
     .string({ required_error: 'Recipe name is required' })
@@ -42,6 +56,9 @@ export const newRecipeSchema = z.object({
     .coerce
     .number({ invalid_type_error: "Servings must be a number" })
     .nonnegative({ message: 'Servings per recipe must not me negative' })
+		.optional(),
+	recipeIngredients: z
+		.array(newRecipeIngredientSchema)
 		.optional()
 })
 export type NewRecipeSchema = typeof newRecipeSchema

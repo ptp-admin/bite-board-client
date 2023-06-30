@@ -3,29 +3,33 @@ import { fail, redirect } from '@sveltejs/kit';
 import { newRecipeSchema } from '../../../schemas';
 import { superValidate } from 'sveltekit-superforms/server';
 import { axiosHandler } from '../../../lib/axiosHandler';
-import type { Recipe } from '../../../../types/data';
+import type { Ingredient, Recipe } from '../../../../types/data';
 
 export const load = (async (event) => {
 	const form = await superValidate(event, newRecipeSchema);
+	const response = await fetch('http://localhost:3456/ingredients');
+	const ingredients: Ingredient[] = await response.json();
 
-	return form;
+	return { form, ingredients };
 }) satisfies PageServerLoad;
 
 export const actions = {
 	default: async (event) => {
 		const form = await superValidate(event, newRecipeSchema);
-
+		console.log(form);
+		
 		// validation error case
 		if (!form.valid) {
 			return fail(400, { form });
 		}
 
-		const { name, method, servings } = form.data
+		const { name, method, servings, recipeIngredients } = form.data
 
 		const recipe: Recipe = {
 			name,
 			method: method || '',
-			servings
+			servings,
+			recipeIngredients
 		}
 
 		await axiosHandler({

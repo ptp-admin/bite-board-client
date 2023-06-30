@@ -1,4 +1,4 @@
-import type { Ingredient } from '../../../types/ingredients'
+import type { Ingredient } from '../../../types/data'
 import _ from 'lodash'
 
 import { writable } from 'svelte/store'

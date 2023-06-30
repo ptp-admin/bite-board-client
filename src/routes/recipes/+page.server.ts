@@ -1,11 +1,10 @@
-/** @type {import('./$types').PageServerLoad} */
-/** @type {import('./$types').Actions} */
+import type { PageServerLoad } from './$types';
 
 import { error } from '@sveltejs/kit';
 import { axiosHandler } from '../../lib/axiosHandler';
 
-export const load = async () => {
-  const recipes = await axiosHandler({
+export const load = (async () => {
+	const recipes = await axiosHandler({
     method: 'get',
     route: `/recipes/`
   })
@@ -13,4 +12,4 @@ export const load = async () => {
   if (recipes) return {recipes: recipes.data}
   // error if not
   throw error(404, 'Not found');
-}
+}) satisfies PageServerLoad;

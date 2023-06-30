@@ -1,7 +1,9 @@
-<script>
-	/** @type {import('./$types').PageData} */
-	export let data;
-	const { name, method, servings, recipeIngredients, costPerServe } = data.recipe
+<script lang="ts">
+    import type { PageData } from './$types';
+    
+    export let data;
+		const recipe: Recipe[] = data.recipe
+		const { name, method, servings, recipeIngredients, costPerServe } = recipe
 </script>
 
 <div>
@@ -9,7 +11,7 @@
 	<div>
 		<!-- svelte-ignore a11y-invalid-attribute -->
 		<a href="javascript:history.back()">
-			Back
+			<button>Back</button>
 		</a>
 	</div>
 	<!-- Recipe Card -->
@@ -36,7 +38,7 @@
 					</h2>
 					<ul>
 						{#each recipeIngredients as ingredient}
-							<li>{ingredient.recipe_number_of} {ingredient.recipe_measurement_unit} {ingredient.ingredient_name}</li>
+							<li>{ingredient.recipeNumberOf} {ingredient.recipeMeasurementUnit} {ingredient.name}</li>
 							<div />
 						{/each}
 					</ul>	
@@ -50,7 +52,6 @@
 				</div>
 			</div>
 		</div>
-		
 	</main>
 	<!-- Add to Shopping List/Edit -->
 	<!-- <div>

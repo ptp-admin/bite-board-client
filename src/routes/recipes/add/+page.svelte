@@ -2,13 +2,24 @@
 	import type { SuperValidated } from 'sveltekit-superforms';
 	import type { NewRecipeSchema } from '../../../schemas';
 	import { superForm } from 'sveltekit-superforms/client';
+	import Editor from '@tinymce/tinymce-svelte';
 
-	export let data: SuperValidated<NewRecipeSchema>
+	export let data: SuperValidated<NewRecipeSchema>;
+
+	let method = `
+		<ol>
+			<li>Add a recipe name and servings to your recipe</li>
+			<li>Add the ingredients by searching for them by name</li>
+			<li>Edit this text field to add your cooking steps</li>
+		</ol>
+	`;
+
 
 	const { form, errors, enhance } = superForm(data, {
 		resetForm: true,
 		multipleSubmits: 'prevent'
-	})
+	});
+
 </script>
 
 <!-- svelte-ignore a11y-invalid-attribute -->
@@ -17,11 +28,9 @@
 </a>
 <h1>Create New Recipe</h1>
 
-<form 
-	method="POST"
-	class="bg-gray-200 p-6"
-	use:enhance
->
+
+<form method="POST" class="bg-gray-200 p-6" use:enhance>
+
 	<!-- Name -->
 	<div>
 		<label for="name">Name</label>
@@ -34,10 +43,10 @@
 	<!-- Method -->
 	<div>
 		<label for="method">method</label>
-		<input type="text" id="method" name="method" bind:value={$form.method} />
-		{#if $errors.method}
-			<small style="color: red">{$errors.method}</small>
-		{/if}
+
+		<input name="method" type="hidden" value={method} />
+		<Editor bind:value={method} />
+
 	</div>
 
 	<!-- Servings -->

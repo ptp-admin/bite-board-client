@@ -36,8 +36,10 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@tinymce/tinymce-svelte": "^1.0.1",
 		"@types/lodash": "^4.14.195",
 		"axios": "^1.4.0",
-		"lodash": "^4.17.21"
+		"lodash": "^4.17.21",
+		"tinymce": "^6.5.1"
 	}
 }

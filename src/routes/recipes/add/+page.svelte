@@ -1,12 +1,13 @@
 <script lang="ts">
-	import type { SuperValidated } from 'sveltekit-superforms';
-	import type { NewRecipeSchema } from '../../../schemas';
 	import { superForm } from 'sveltekit-superforms/client';
 	import Editor from '@tinymce/tinymce-svelte';
 	import AutoComplete from '../../../components/AutoComplete.svelte';
 	import type { PageData } from './$types';
+	import { afterUpdate } from 'svelte';
 
 	export let data: PageData;
+	afterUpdate(() => console.log(data)
+	)
 
 	const { form, errors, enhance } = superForm(data.form, {
 		dataType: 'json',
@@ -14,13 +15,20 @@
 		multipleSubmits: 'prevent'
 	});
 
-	$form.method = `
+	let methodPlaceholder = `
 		<ol>
 			<li>Add a recipe name and servings to your recipe</li>
 			<li>Add the ingredients by searching for them by name</li>
 			<li>Edit this text field to add your cooking steps</li>
 		</ol>
 	`;
+
+	form.set({
+		name: '',
+		method: methodPlaceholder,
+		servings: undefined,
+		recipeIngredients: []
+	})
 </script>
 
 <!-- svelte-ignore a11y-invalid-attribute -->

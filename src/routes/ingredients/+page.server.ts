@@ -32,14 +32,14 @@ export const actions = {
 			return fail(400, { form });
 		}
 
-		// validation succes case
-		await axiosHandler({
+		// validation success case
+		const ingredientId = await axiosHandler({
 			method: 'post',
 			route: '/ingredients',
 			data: form.data
 		});
 
-		return { success: true, form };
+		return { success: true, form, id: ingredientId.toString() };
 	},
 
 	update: async (event) => {

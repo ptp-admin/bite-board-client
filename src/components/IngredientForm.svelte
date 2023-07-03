@@ -13,8 +13,10 @@
 
 	const { form, errors, enhance } = superForm(data, {
 		id: formId,
+		applyAction: true,
 		resetForm: true,
-		multipleSubmits: 'prevent'
+		multipleSubmits: 'prevent',
+		taintedMessage: null
 	})
 
 	if (!ingredient) {

@@ -9,7 +9,7 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <dialog
 	bind:this={dialog}
-	on:close={() => (showModal = false)}
+	on:close|preventDefault={() => (showModal = false)}
 	on:click|self={() => dialog.close()}
 >
 	<div on:click|stopPropagation>
@@ -17,13 +17,13 @@
 		<hr />
 		<slot />
 		<hr />
-		<slot name="button" /><button on:click={() => dialog.close()}>cancel</button>
+		<slot name="button" /><button on:click|preventDefault={() => dialog.close()}>Cancel</button>
 	</div>
 </dialog>
 
 <style>
 	dialog {
-		max-width: 32em;
+		max-width: 60%;
 		border-radius: 0.2em;
 		border: none;
 		padding: 0;

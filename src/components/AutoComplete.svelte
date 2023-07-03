@@ -1,96 +1,163 @@
 <script lang="ts">
-	import type { Ingredient } from "../../types/data";
-	import { onDestroy } from "svelte";
-	import { writable } from "svelte/store";
-	export let data;
-  export let ingredients: Ingredient[] = data.ingredients;
+	import type { Ingredient } from '../../types/data';
+	import { afterUpdate, onMount } from 'svelte';
+	import axios from 'axios';
+	// import Modal from './Modal.svelte';
+	// import IngredientForm from './IngredientForm.svelte';
+
+	export let data: any;
+	export let ingredients: Ingredient[] = data.ingredients;
 	export let form: any;
 
-	const selectedIngredients = writable([])
-  let searchResults: RecipeIngredient[] = []; // TODO fix this type
-  let searchTerm = "";
-  let focusedIndex = -1;
+	// let showModal = false;
+	let measurementUnitOptions = [''];
+	let searchResults: Ingredient[] = [];
+	let searchTerm = '';
+	// $: addIngredient = {name: searchTerm}
 
-	form.set({
-		name: $form.name,
-		method: $form.method,
-		servings: $form.servings,
-		recipeIngredients: []
-	}) // fill this array with new ingredients
+	const filterIngredients = () => {
+		searchResults = ingredients
+			.filter((ingredient) => ingredient.name.toLowerCase().includes(searchTerm.toLowerCase()))
+			// .concat({ id: null, name: `Add ingredient: ${searchTerm}` });
+	};
 
-	onDestroy(() =>
-		selectedIngredients.set([])
-	);
-
-  function filterIngredients() {
-    searchResults = ingredients.filter((ingredient) =>
-      ingredient.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    focusedIndex = -1; // Reset focused index when filtering results
-  }
-
-  function selectIngredient(ingredient: Ingredient) {
+	const selectIngredient = (ingredient: Ingredient) => {
 		const recipeIngredient = {
-			name: ingredient.name,
-			id: ingredient.id,
+			...ingredient,
 			recipeNumberOf: null,
-			recipeMeasurementUnit: ''
-		}
+			recipeMeasurementUnit: ingredient.measurementUnit // <- Pre-selects the ingredient's measurementUnit on the dropdown
+		};
+
 		form.set({
-			name: $form.name,
-			method: $form.method,
-			servings: $form.servings,
+			...$form,
 			recipeIngredients: [...$form.recipeIngredients, recipeIngredient]
-		})
-		console.log($form);
+		});
 
-		ingredients = ingredients.filter(i => i.name !== ingredient.name)
-    searchTerm = "";
-    searchResults = [];
-    focusedIndex = -1; // Reset focused index after selection
-  }
+		ingredients = ingredients.filter((i) => i.name !== ingredient.name);
+		searchTerm = '';
+		searchResults = [];
+	};
 
-	function removeIngredient(ingredient) {
-		console.log($form.recipeIngredients.filter(i => i.name !== ingredient.name));
-		
-		form.set({recipeIngredients: $form.recipeIngredients.filter(i => i.name !== ingredient.name)});
-    // selectedIngredients.set($selectedIngredients.filter(i => i.name !== ingredient.name));
+	const removeIngredient = (ingredient: any) => {
+		const filteredIngredients = $form.recipeIngredients.filter(
+			(i: any) => i.name !== ingredient.name
+		);
+
+		form.set({
+			...$form,
+			recipeIngredients: filteredIngredients
+		});
+
 		ingredients = [...ingredients, ingredient];
-  }
+	};
+
+	onMount(async () => {
+		try {
+			const response = await axios.get(`http://localhost:3456/ingredients/measurementUnits`);
+			measurementUnitOptions = response.data;
+		} catch (error) {
+			console.error('Error fetching measurementUnitOptions:', error);
+		}
+	});
+
+	afterUpdate(() => console.log($form.recipeIngredients))
 </script>
 
+<div class="autocomplete-input">
+	<h3>Ingredients</h3>
+	{#if searchTerm.length > 0}
+		<div class="autocomplete-dropdown">
+			{#each searchResults as result}
+				<!-- {#if !result.id}
+					<button
+						class="autocomplete-dropdown-item"
+						on:click|preventDefault={() => (showModal = !showModal)}
+					>
+						{result.name}
+					</button>
+				{:else} -->
+					<button class="autocomplete-dropdown-item" on:click={() => selectIngredient(result)}>
+						{result.name}
+					</button>
+				<!-- {/if} -->
+			{/each}
+		</div>
+	{/if}
+	{#each $form.recipeIngredients as ingredient}
+		<div class="flex-container" style="padding-bottom: 0.5em; width: 97.5%">
+			<div class="half-width">{ingredient.name}</div>
+			<div class="flex-container half-width">
+				<div>
+					<input
+						placeholder="100"
+						bind:value={ingredient.recipeNumberOf}
+						id="grid-first-name"
+						type="text"
+					/>
+				</div>
+				<div>
+					<select bind:value={ingredient.recipeMeasurementUnit} name="measurementUnit">
+						{#each measurementUnitOptions as measurementUnit}
+							<option value={measurementUnit}>{measurementUnit}</option>
+						{/each}
+					</select>
+				</div>
+				<button on:click|preventDefault={() => removeIngredient(ingredient)}> remove </button>
+			</div>
+		</div>
+	{/each}
+	<input
+		type="text"
+		placeholder="Search for ingredients..."
+		style="margin-bottom: 1em"
+		bind:value={searchTerm}
+		on:input={filterIngredients}
+	/>
+</div>
+
+<!-- <Modal bind:showModal>
+	<h2 slot="header">Add Ingredient to database:</h2>
+	<IngredientForm
+		data={data.form}
+		ingredient={addIngredient}
+		action="/ingredients?/create"
+		formId="recipeIngredient"
+		{measurementUnitOptions}
+	/>
+</Modal> -->
+
 <style>
-  .autocomplete-input {
-    position: relative;
-  }
+	.autocomplete-input {
+		position: relative;
+	}
 
-  .autocomplete-dropdown {
-    position: absolute;
+	.autocomplete-dropdown {
+		position: absolute;
 		width: 93%;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background-color: #f1f1f1;
-    padding: 0.5rem;
-    border-radius: 4px;
-    overflow-y: auto;
+		top: 100%;
+		left: 0;
+		right: 0;
+		background-color: #f1f1f1;
+		padding: 0.5rem;
+		border-radius: 4px;
+		overflow-y: auto;
 		z-index: 100;
-  }
+	}
 
-  .autocomplete-dropdown-item {
-    cursor: pointer;
-    padding: 0.25rem 0.5rem;
-    background-color: #ffffff;
-  }
+	.autocomplete-dropdown-item {
+		cursor: pointer;
+		padding: 0.25rem 0.5rem;
+		background-color: #ffffff;
+	}
 
-  .autocomplete-dropdown-item:focus {
-    background-color: #e0e0e0;
-  }
+	.autocomplete-dropdown-item:focus {
+		background-color: #e0e0e0;
+	}
 
 	.flex-container {
 		display: flex;
 		flex-direction: row;
-		width: 100%
+		width: 100%;
 	}
 
 	h3 {
@@ -99,62 +166,9 @@
 
 	input {
 		width: 95%;
-		margin-bottom: 1em;
 	}
 
 	.half-width {
 		width: 50%;
 	}
 </style>
-
-<div class="autocomplete-input">
-	<h3>Ingredients</h3>
-  {#if searchResults.length > 0}
-    <div class="autocomplete-dropdown">
-      {#each searchResults as result, index (result.id)}
-        <button
-          class="autocomplete-dropdown-item"
-          on:click={() => selectIngredient(result)}
-          tabindex={index === focusedIndex ? "0" : "-1"}
-          aria-selected={index === focusedIndex}
-        >
-          {result.name}
-        </button>
-      {/each}
-    </div>
-  {/if}
-	{#each $form.recipeIngredients as ingredient (ingredient.id)}
-		<div class="flex-container">
-			<div style="width: 150px">{ingredient.name}</div>
-			<div class="flex-container">
-				<div>
-					<input 
-						placeholder="100"
-						bind:value={ingredient.recipeNumberOf}
-						id="grid-first-name" 
-						type="text"
-					>
-				</div>
-				<div>
-					<input
-						placeholder="g"
-						bind:value={ingredient.recipeMeasurementUnit}
-						id="grid-last-name" 
-						type="text"
-					>
-				</div>
-				<button
-					on:click|preventDefault={() => removeIngredient(ingredient)}
-				>
-					x
-				</button>
-			</div>
-		</div>
-  {/each}
-	<input
-    type="text"
-    placeholder="Search for ingredients..."
-    bind:value={searchTerm}
-    on:input={filterIngredients}
-  />
-</div>

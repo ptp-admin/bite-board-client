@@ -1,9 +1,10 @@
 import type { PageServerLoad } from './$types';
+import type { Ingredient, Recipe } from '../../../../types/data';
 import { fail, redirect } from '@sveltejs/kit';
 import { newRecipeSchema } from '../../../schemas';
 import { superValidate } from 'sveltekit-superforms/server';
 import { axiosHandler } from '../../../lib/axiosHandler';
-import type { Ingredient, Recipe } from '../../../../types/data';
+
 
 export const load = (async (event) => {
 	const form = await superValidate(event, newRecipeSchema);
@@ -16,7 +17,6 @@ export const load = (async (event) => {
 export const actions = {
 	default: async (event) => {
 		const form = await superValidate(event, newRecipeSchema);
-		console.log(form);
 		
 		// validation error case
 		if (!form.valid) {

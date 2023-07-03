@@ -47,7 +47,7 @@
 							{/each}
 						</ul>
 					{:else}
-						<p>There are no ingredients in this recipeyet. Add some!</p>
+						<p>There are no ingredients in this recipe</p>
 					{/if}
 				</div>
 				<!-- Method -->

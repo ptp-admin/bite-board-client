@@ -59,8 +59,6 @@
 			console.error('Error fetching measurementUnitOptions:', error);
 		}
 	});
-
-	afterUpdate(() => console.log($form.recipeIngredients))
 </script>
 
 <div class="autocomplete-input">

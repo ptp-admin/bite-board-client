@@ -6,9 +6,7 @@
 	import { afterUpdate } from 'svelte';
 
 	export let data: PageData;
-	afterUpdate(() => console.log(data)
-	)
-
+	
 	const { form, errors, enhance } = superForm(data.form, {
 		dataType: 'json',
 		resetForm: true,

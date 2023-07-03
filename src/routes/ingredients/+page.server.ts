@@ -39,7 +39,7 @@ export const actions = {
 			data: form.data
 		});
 
-		return { success: true, form, id: ingredientId.toString() };
+		return { success: true, form };
 	},
 
 	update: async (event) => {

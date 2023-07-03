@@ -1,7 +1,10 @@
-<script>
-	/** @type {import('./$types').PageData} */
-	export let data;
-	const { name, method, servings, recipeIngredients, costPerServe } = data.recipe
+<script lang="ts">
+	import type { Recipe } from '../../../../types/data';
+	import type { PageData } from './$types';
+
+	export let data: PageData;
+	const recipe: Recipe = data.recipe;
+	const { name, method, servings, recipeIngredients, costPerServe } = recipe;
 </script>
 
 <div>
@@ -9,7 +12,7 @@
 	<div>
 		<!-- svelte-ignore a11y-invalid-attribute -->
 		<a href="javascript:history.back()">
-			Back
+			<button>Back</button>
 		</a>
 	</div>
 	<!-- Recipe Card -->
@@ -21,7 +24,7 @@
 					<h1>
 						{name}
 					</h1>
-					<div >
+					<div>
 						<div>{servings} Serves</div>
 						<div>${costPerServe}/Serve</div>
 					</div>
@@ -31,26 +34,29 @@
 			<div>
 				<!-- Ingredients -->
 				<div>
-					<h2>
-						Ingredients
-					</h2>
-					<ul>
-						{#each recipeIngredients as ingredient}
-							<li>{ingredient.recipe_number_of} {ingredient.recipe_measurement_unit} {ingredient.ingredient_name}</li>
-							<div />
-						{/each}
-					</ul>	
+					<h2>Ingredients</h2>
+					{#if recipeIngredients && recipeIngredients.length > 0}
+						<ul>
+							{#each recipeIngredients as ingredient}
+								<li>
+									{ingredient.recipeNumberOf}
+									{ingredient.recipeMeasurementUnit}
+									{ingredient.name}
+								</li>
+								<div />
+							{/each}
+						</ul>
+					{:else}
+						<p>There are no ingredients in this recipeyet. Add some!</p>
+					{/if}
 				</div>
 				<!-- Method -->
 				<div>
-					<h2>
-						Method
-					</h2>
+					<h2>Method</h2>
 					<p>{@html method}</p>
 				</div>
 			</div>
 		</div>
-		
 	</main>
 	<!-- Add to Shopping List/Edit -->
 	<!-- <div>

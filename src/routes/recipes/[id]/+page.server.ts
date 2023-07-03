@@ -1,16 +1,16 @@
-/** @type {import('./$types').PageServerLoad} */
-/** @type {import('./$types').Actions} */
-
-import { error } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types';
 import { axiosHandler } from '../../../lib/axiosHandler';
-export async function load({ params }) {
-		const recipe = await axiosHandler({
-			method: 'get',
-			route: `/recipes/${params.id}`
-		})
+import { error } from '@sveltejs/kit';
 
-		// return if successful
-		if (recipe) return {recipe: recipe.data}
-		// error if not
+export const load = (async ({params}) => {
+	const recipe = await axiosHandler({
+		method: 'get',
+		route: `/recipes/${params.id}`
+	})
+
+	if (recipe) {
+		return {recipe: recipe.data}
+	} else {
 		throw error(404, 'Not found');
-}
+	}
+}) satisfies PageServerLoad;

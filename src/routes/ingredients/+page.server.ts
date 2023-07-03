@@ -1,37 +1,35 @@
-/** @type {import('./$types').PageServerLoad} */
-/** @type {import('./$types').Actions} */
-import type { Ingredient } from '../../../types/ingredients'
-
-import { superValidate } from 'sveltekit-superforms/server'
+import type { PageServerLoad } from './$types';
+import type { Ingredient } from '../../../types/data';
+import { superValidate } from 'sveltekit-superforms/server';
 import { error, fail } from '@sveltejs/kit';
 import { axiosHandler } from '../../lib/axiosHandler.js';
 import { newIngredientSchema } from '../../schemas';
 import { searchableIngredientsStructure } from '$lib/stores/search';
 
-export const load = async (event) => {
+export const load = (async (event) => {
 	const form = await superValidate(event, newIngredientSchema);
-  const response = await fetch('http://localhost:3456/ingredients')
-	const ingredients: Ingredient[] = await response.json()
+	const response = await fetch('http://localhost:3456/ingredients');
+	const ingredients: Ingredient[] = await response.json();
 
-  if (ingredients){
+	if (ingredients) {
 		const searchableIngredients = searchableIngredientsStructure(ingredients);
-    return {
+		return {
 			searchableIngredients,
 			ingredients,
 			form
-		}
-  }
-	
-  throw error(404, 'Not found');
-}
+		};
+	}
+
+	throw error(404, 'Not found');
+}) satisfies PageServerLoad;
 
 export const actions = {
-  create: async (event) => {
-		const form = await superValidate(event, newIngredientSchema)
+	create: async (event) => {
+		const form = await superValidate(event, newIngredientSchema);
 
 		// validation error case
 		if (!form.valid) {
-			return fail(400, { form })
+			return fail(400, { form });
 		}
 
 		// validation succes case
@@ -39,36 +37,36 @@ export const actions = {
 			method: 'post',
 			route: '/ingredients',
 			data: form.data
-		})
+		});
 
-		return {success: true, form}
-  },
+		return { success: true, form };
+	},
 
-  update: async (event) => {
-    const form = await superValidate(event, newIngredientSchema)
+	update: async (event) => {
+		const form = await superValidate(event, newIngredientSchema);
 
 		// validation error case
 		if (!form.valid) {
-			return fail(400, { form })
+			return fail(400, { form });
 		}
 
 		await axiosHandler({
 			method: 'put',
 			route: `/ingredients/${form.data.id}`,
 			data: form.data
-		})
-		return {success: true, form}
-  },
+		});
+		return { success: true, form };
+	},
 
 	delete: async (event) => {
-    const form = await superValidate(event, newIngredientSchema)
-    const id = form.data.id
-		
-    await axiosHandler({
-      method: 'delete',
-      route: `/ingredients/${id}`
-    })
-    
-    return {success: true, form}
-  }
-}
+		const form = await superValidate(event, newIngredientSchema);
+		const id = form.data.id;
+
+		await axiosHandler({
+			method: 'delete',
+			route: `/ingredients/${id}`
+		});
+
+		return { success: true, form };
+	}
+};

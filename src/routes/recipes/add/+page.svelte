@@ -3,16 +3,16 @@
 	import Editor from '@tinymce/tinymce-svelte';
 	import AutoComplete from '../../../components/AutoComplete.svelte';
 	import type { PageData } from './$types';
-	import { afterUpdate } from 'svelte';
 
 	export let data: PageData;
-	
+
 	const { form, errors, enhance } = superForm(data.form, {
 		dataType: 'json',
 		resetForm: true,
 		multipleSubmits: 'prevent'
 	});
 
+	const { apiKey } = data	
 	let methodPlaceholder = `
 		<ol>
 			<li>Add a recipe name and servings to your recipe</li>
@@ -26,7 +26,7 @@
 		method: methodPlaceholder,
 		servings: undefined,
 		recipeIngredients: []
-	})
+	});
 </script>
 
 <!-- svelte-ignore a11y-invalid-attribute -->
@@ -69,7 +69,7 @@
 			<div>
 				<label for="method"><h3>Method</h3></label>
 				<!-- <input name="method" type="hidden" value={method} /> -->
-				<Editor bind:value={$form.method} />
+				<Editor {apiKey} bind:value={$form.method} />
 			</div>
 		</div>
 	</div>
@@ -80,7 +80,7 @@
 		margin: 0.25em 0;
 	}
 	input {
-		width: 90%
+		width: 90%;
 	}
 
 	.flex-container {
@@ -90,7 +90,6 @@
 	}
 
 	.half-width {
-
 		width: 50%;
 	}
 </style>

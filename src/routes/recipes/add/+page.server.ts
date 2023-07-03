@@ -4,6 +4,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import { newRecipeSchema } from '../../../schemas';
 import { superValidate } from 'sveltekit-superforms/server';
 import { axiosHandler } from '../../../lib/axiosHandler';
+import { TINY_API_KEY } from '$env/static/private';
 
 
 export const load = (async (event) => {
@@ -11,7 +12,7 @@ export const load = (async (event) => {
 	const response = await fetch('http://localhost:3456/ingredients');
 	const ingredients: Ingredient[] = await response.json();
 
-	return { form, ingredients };
+	return { form, ingredients, apiKey: TINY_API_KEY };
 }) satisfies PageServerLoad;
 
 export const actions = {

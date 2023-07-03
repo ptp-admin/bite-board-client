@@ -14,10 +14,12 @@
 		</ol>
 	`;
 
+
 	const { form, errors, enhance } = superForm(data, {
 		resetForm: true,
 		multipleSubmits: 'prevent'
 	});
+
 </script>
 
 <!-- svelte-ignore a11y-invalid-attribute -->
@@ -26,7 +28,9 @@
 </a>
 <h1>Create New Recipe</h1>
 
+
 <form method="POST" class="bg-gray-200 p-6" use:enhance>
+
 	<!-- Name -->
 	<div>
 		<label for="name">Name</label>
@@ -39,8 +43,10 @@
 	<!-- Method -->
 	<div>
 		<label for="method">method</label>
+
 		<input name="method" type="hidden" value={method} />
 		<Editor bind:value={method} />
+
 	</div>
 
 	<!-- Servings -->

@@ -33,7 +33,9 @@ export const actions = {
 			route: '/recipes',
 			data: recipe
 		});
+
 		throw redirect(307, '/recipes');
 		// return { success: true, form };
+
 	}
 };

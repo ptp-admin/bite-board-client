@@ -78,6 +78,14 @@
 	onDestroy(() => unsubscribe())
 </script>
 
+<style>
+	.flex-container {
+		display: flex;
+		flex-direction: row;
+		width: 100%
+	}
+</style>
+
 <h2>Add Ingredient</h2>
 
 <IngredientForm
@@ -118,14 +126,15 @@
 			action={'?/update'}
 			{ingredient}
 			{measurementUnitOptions}
-		/>
-		<DeleteIngredientButton
-			{ingredient}
-			data={data.form}
-			formId={ingredient.id.toString()}
-		/>
-		<div>
-			<button on:click={() => ingredient.editable = !ingredient.editable}>cancel</button>
-		</div>
+		>
+			<DeleteIngredientButton
+				{ingredient}
+				data={data.form}
+				formId={ingredient.id.toString()}
+			/>
+			<div>
+				<button on:click={() => ingredient.editable = !ingredient.editable}>cancel</button>
+			</div>
+		</IngredientForm>
 	{/if}
 {/each}

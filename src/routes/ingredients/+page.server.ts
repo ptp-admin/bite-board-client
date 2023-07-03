@@ -32,8 +32,8 @@ export const actions = {
 			return fail(400, { form });
 		}
 
-		// validation succes case
-		await axiosHandler({
+		// validation success case
+		const ingredientId = await axiosHandler({
 			method: 'post',
 			route: '/ingredients',
 			data: form.data

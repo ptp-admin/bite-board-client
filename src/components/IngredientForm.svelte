@@ -2,6 +2,7 @@
   import type { SuperValidated } from 'sveltekit-superforms';
 	import type { NewIngredientSchema } from '../schemas';
 
+	import { page } from '$app/stores';
 	import { beforeUpdate } from 'svelte';
   import { superForm } from 'sveltekit-superforms/client'
 
@@ -18,7 +19,7 @@
 		multipleSubmits: 'prevent',
 		taintedMessage: null
 	})
-
+	
 	if (!ingredient) {
 		form.set({ 
 			name: '',
@@ -29,7 +30,8 @@
 		})
 	} 
 
-	beforeUpdate(() => {if (ingredient) {
+	beforeUpdate(() => {
+		if (ingredient) {
 		form.set(ingredient)
 	}})
 </script>
@@ -94,7 +96,11 @@
 				<small style="color: red">{$errors.measurementUnit}</small>
 			{/if}
 		</div>
-		<button on:click={() => ingredient.editable = false}>{$form.id ? 'update' : 'add'}</button>
+		{#if $form.id}
+			<button on:click={() => ingredient.editable = false}>'update'</button>
+		{:else}
+		<button >'add'</button>
+		{/if}
 		<slot />
 	</div>
 

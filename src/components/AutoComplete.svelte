@@ -2,23 +2,19 @@
 	import type { Ingredient } from '../../types/data';
 	import { afterUpdate, onMount } from 'svelte';
 	import axios from 'axios';
-	// import Modal from './Modal.svelte';
-	// import IngredientForm from './IngredientForm.svelte';
 
 	export let data: any;
 	export let ingredients: Ingredient[] = data.ingredients;
 	export let form: any;
 
-	// let showModal = false;
 	let measurementUnitOptions = [''];
 	let searchResults: Ingredient[] = [];
 	let searchTerm = '';
-	// $: addIngredient = {name: searchTerm}
 
 	const filterIngredients = () => {
 		searchResults = ingredients
 			.filter((ingredient) => ingredient.name.toLowerCase().includes(searchTerm.toLowerCase()))
-			// .concat({ id: null, name: `Add ingredient: ${searchTerm}` });
+			.concat({ id: null, name: `Add ingredient: ${searchTerm}` });
 	};
 
 	const selectIngredient = (ingredient: Ingredient) => {
@@ -48,7 +44,8 @@
 			recipeIngredients: filteredIngredients
 		});
 
-		ingredients = [...ingredients, ingredient];
+		if (ingredient.id)
+			ingredients = [...ingredients, ingredient];
 	};
 
 	onMount(async () => {
@@ -66,18 +63,9 @@
 	{#if searchTerm.length > 0}
 		<div class="autocomplete-dropdown">
 			{#each searchResults as result}
-				<!-- {#if !result.id}
-					<button
-						class="autocomplete-dropdown-item"
-						on:click|preventDefault={() => (showModal = !showModal)}
-					>
+					<button class="autocomplete-dropdown-item" on:click={() => result.id ? selectIngredient(result) : selectIngredient({name: searchTerm})}>
 						{result.name}
 					</button>
-				{:else} -->
-					<button class="autocomplete-dropdown-item" on:click={() => selectIngredient(result)}>
-						{result.name}
-					</button>
-				<!-- {/if} -->
 			{/each}
 		</div>
 	{/if}
@@ -112,17 +100,6 @@
 		on:input={filterIngredients}
 	/>
 </div>
-
-<!-- <Modal bind:showModal>
-	<h2 slot="header">Add Ingredient to database:</h2>
-	<IngredientForm
-		data={data.form}
-		ingredient={addIngredient}
-		action="/ingredients?/create"
-		formId="recipeIngredient"
-		{measurementUnitOptions}
-	/>
-</Modal> -->
 
 <style>
 	.autocomplete-input {

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Ingredient } from '../../types/data';
-	import { afterUpdate, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import axios from 'axios';
 
 	export let data: any;
@@ -14,7 +14,7 @@
 	const filterIngredients = () => {
 		searchResults = ingredients
 			.filter((ingredient) => ingredient.name.toLowerCase().includes(searchTerm.toLowerCase()))
-			.concat({ id: null, name: `Add ingredient: ${searchTerm}` });
+			.concat({ name: `Add ingredient: ${searchTerm}` });
 	};
 
 	const selectIngredient = (ingredient: Ingredient) => {

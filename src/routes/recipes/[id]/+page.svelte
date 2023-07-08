@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Recipe } from '../../../../types/data';
 	import type { PageData } from './$types';
+	import DeleteRecipeButton from '../../../components/DeleteRecipeButton.svelte';
 
 	export let data: PageData;
 	const recipe: Recipe = data.recipe;
@@ -68,4 +69,5 @@
 			Edit Recipe
 		</a>
 	</div> -->
+	<DeleteRecipeButton {data} {recipe} />
 </div>

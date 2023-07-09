@@ -23,4 +23,5 @@ export interface Recipe {
   servings?: number;
   recipeIngredients?: RecipeIngredient[];
   costPerServe?: number;
+	editable?: boolean;
 }

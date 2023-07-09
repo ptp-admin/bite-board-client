@@ -1,15 +1,22 @@
 import type { PageServerLoad } from './$types';
 import { axiosHandler } from '../../../lib/axiosHandler';
 import { error, redirect } from '@sveltejs/kit';
+import { TINY_API_KEY } from '$env/static/private';
+import type { Ingredient, Recipe } from '../../../../types/data';
+import { superValidate } from 'sveltekit-superforms/server';
+import { newRecipeSchema } from '../../../schemas';
 
-export const load = (async ({params}) => {
+export const load = (async (event) => {
 	const recipe = await axiosHandler({
 		method: 'get',
-		route: `/recipes/${params.id}`
+		route: `/recipes/${event.params.id}`
 	})
+	const form = await superValidate(event, newRecipeSchema);
+	const response = await fetch('http://localhost:3456/ingredients');
+	const ingredients: Ingredient[] = await response.json();
 
 	if (recipe) {
-		return {recipe: recipe.data}
+		return {recipe: recipe.data, form, ingredients, apiKey: TINY_API_KEY}
 	} else {
 		throw error(404, 'Not found');
 	}

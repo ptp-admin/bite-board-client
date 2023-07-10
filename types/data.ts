@@ -1,12 +1,12 @@
 export interface Ingredient {
-	id: number,
+	id?: number,
   name: string,
   category?: string,
 	costPer?: number,
   numberOf?: number,
-	editable: boolean,
+	editable?: boolean,
   measurementUnit?: string,
-	searchKeywords: string
+	searchKeywords?: string
 }
 
 export interface RecipeIngredient extends Ingredient {

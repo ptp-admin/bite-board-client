@@ -18,7 +18,7 @@ export const load = (async (event) => {
 export const actions = {
 	default: async (event) => {
 		const form = await superValidate(event, newRecipeSchema);
-		
+
 		// validation error case
 		if (!form.valid) {
 			return fail(400, { form });
@@ -33,12 +33,13 @@ export const actions = {
 			recipeIngredients
 		}
 
-		await axiosHandler({
+		const response = await axiosHandler({
 			method: 'post',
 			route: '/recipes',
 			data: recipe
 		});
-		throw redirect(307, '/recipes');
-		// return { success: true, form };
+		const { message, recipeId } = response.data
+
+		throw redirect(307, `/recipes/${recipeId}`);
 	}
 };

@@ -31,7 +31,13 @@ export type NewIngredientSchema = typeof newIngredientSchema
 export const newRecipeIngredientSchema = z.object({
 	id: z
     .coerce
-    .number(),
+    .number()
+		.optional(),
+	name: z
+    .string({ required_error: 'Ingredient name is required' })
+    .min(1, { message: 'Ingredient name is required' })
+    .max(64, { message: 'Name must be less than 64 characters' })
+    .trim(),
 	recipeNumberOf: z
     .coerce
     .number({invalid_type_error: "Unit must be a number"})

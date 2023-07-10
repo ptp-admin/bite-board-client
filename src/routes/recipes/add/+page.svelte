@@ -16,7 +16,8 @@
 	let methodPlaceholder = `
 		<ol>
 			<li>Add a recipe name and servings to your recipe</li>
-			<li>Add the ingredients by searching for them by name</li>
+			<li>Add existing ingredients by searching for them by name</li>
+			<li>Add a new ingredient by typing the ingredient name and selecting 'add'</li>
 			<li>Edit this text field to add your cooking steps</li>
 		</ol>
 	`;

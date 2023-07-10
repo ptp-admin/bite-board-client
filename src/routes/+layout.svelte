@@ -2,7 +2,8 @@
 	import '../theme.postcss';
 	import '@skeletonlabs/skeleton/styles/skeleton.css';
 	import '../app.postcss';		
-	import { navigating, page } from '$app/stores';
+	import 'iconify-icon'
+	import { page } from '$app/stores';
 
 	// Skeleton Features
 	import { AppShell, AppBar } from '@skeletonlabs/skeleton';

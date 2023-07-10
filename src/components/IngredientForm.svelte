@@ -41,7 +41,7 @@
 	<div class="flex items-center gap-1">
 		<input type="hidden" name="id" bind:value={$form.id} />
 		<!-- Name -->
-		<div class="w-5/12">
+		<div class="w-1/3">
 			{#if !$form.id}
 				<label class="h-6 font-medium" for="name">Name</label>
 			{/if}
@@ -133,11 +133,15 @@
 			{/if}
 		</div>
 		{#if $form.id}
+			<!-- Accept Edit Ingredient -->
 			<button
-				class="btn btn-sm w-1/12 h-8 bg-primary-500 rounded-lg"
-				on:click={() => (ingredient.editable = false)}>Update</button
+				class="btn btn-sm w-8 h-8 bg-primary-500 rounded-lg"
+				on:click={() => (ingredient.editable = false)}>
+					<iconify-icon icon="ic:baseline-check" />
+				</button
 			>
 		{:else}
+		<!-- Add New Ingredient -->
 			<button class="btn btn-sm w-1/12 h-8 bg-primary-500 mt-6 rounded-lg">Add</button>
 		{/if}
 		<slot />

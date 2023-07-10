@@ -93,8 +93,8 @@
 	onDestroy(() => unsubscribe());
 </script>
 
-<div class="card p-3 -m-2 bg-gradient-to-br variant-gradient-primary-secondary drop-shadow-2xl">
-	<h3>New Ingredient</h3>
+<div class="card flex flex-col gap-3 p-5 -m-5 bg-gradient-to-br variant-gradient-primary-secondary drop-shadow-xl">
+	<h3 class="mt-0">New Ingredient</h3>
 	<IngredientForm formId={'add'} data={data.form} action={'?/create'} {measurementUnitOptions} />
 </div>
 
@@ -106,6 +106,7 @@
 	bind:value={$searchStore.searchTerm}
 />
 <div class="py-1 flex flex-row items-center gap-5">
+	<b>{$searchStore.filtered.length} {$searchStore.filtered.length === 1 ? 'result' : 'results'}</b> |
 	<b>Sort by:</b>
 	<div class="flex flex-row items-center gap-1">
 		<input class="checkbox" type="checkbox" bind:checked={$searchStore.sortBy.category} /> Category
@@ -125,15 +126,18 @@
 	</div>
 </div>
 
-<p>
-	<b>{$searchStore.filtered.length} {$searchStore.filtered.length === 1 ? 'result' : 'results'}</b>
-</p>
-
-<div class="space-y-0">
+<div class="space-y-0 shadow-xl">
+	<!-- Ingredient Table Header -->
+	<div class="pl-3 variant-filled-primary rounded-t-lg pr-9 py-2 flex flex-row justify-between">
+		<div class="w-1/3 font-semibold">Ingredient Name</div>
+		<div class="w-1/3 font-semibold">Category</div>
+		<div class="w-1/3 font-semibold">Cost</div>
+	</div>
+	<!-- Ingredient Table Contents -->
 	{#each $searchStore.filtered as ingredient, i}
-		<div class={i % 2 == 0 ? 'bg-surface-200 m-0 rounded-lg' : 'm-0'}>
+		<div class={i % 2 == 1 ? 'bg-surface-200 m-0' : 'm-0'}>
 			{#if !ingredient.editable}
-				<div class="py-1 px-3 flex flex-row justify-between items-center">
+				<div class="py-1 pl-3 pr-1 flex flex-row justify-between items-center">
 					<div class="w-1/3">{ingredient.name}</div>
 					<div class="w-1/3">
 						{#if ingredient.category}
@@ -149,12 +153,15 @@
 							-
 						{/if}
 					</div>
+					<!-- Edit Ingredient Button -->
 					<button
-						class="btn btn-sm h-8 rounded-lg variant-ringed-warning justify-self-end"
+						class="btn btn-sm w-8 h-8 rounded-lg variant-ringed-warning justify-self-end"
 						on:click={() => {
 							ingredient.editable = !ingredient.editable;
-						}}>Edit</button
+						}}
 					>
+						<iconify-icon icon="ic:baseline-edit" />
+					</button>
 				</div>
 			{:else}
 				<div class="py-1 px-1">
@@ -171,9 +178,12 @@
 							formId={ingredient.id.toString()}
 						/>
 						<div>
+							<!-- Close/ Exit Edit -->
 							<button
-								class="btn btn-sm h-8 rounded-lg border-error-400 border-2"
-								on:click={() => (ingredient.editable = !ingredient.editable)}>Cancel</button
+								class="btn btn-sm w-8 h-8 rounded-lg variant-soft-surface"
+								on:click={() => (ingredient.editable = !ingredient.editable)}>
+									<iconify-icon icon="ic:baseline-close" />
+								</button
 							>
 						</div>
 					</IngredientForm>
@@ -181,12 +191,11 @@
 			{/if}
 		</div>
 	{/each}
+	<!-- Ingredient Table Footer -->
+	<div class="pl-3 variant-filled-primary rounded-b-lg pr-10 py-2 flex flex-row justify-between">
+		<div class="w-1/3 font-semibold">Ingredient Name</div>
+		<div class="w-1/3 font-semibold">Category</div>
+		<div class="w-1/3 font-semibold">Cost</div>
+	</div>
 </div>
 
-<style>
-	.flex-container {
-		display: flex;
-		flex-direction: row;
-		width: 100%;
-	}
-</style>

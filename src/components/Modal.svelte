@@ -2,22 +2,27 @@
 	export let showModal: boolean;
 
 	let dialog: any; // HTMLDialogElement
+	export let dialogClass = ''
 
 	$: if (dialog && showModal) dialog.showModal();
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <dialog
+	class={dialogClass}
 	bind:this={dialog}
 	on:close|preventDefault={() => (showModal = false)}
 	on:click|self={() => dialog.close()}
 >
 	<div on:click|stopPropagation>
 		<slot name="header" />
-		<hr />
 		<slot />
-		<hr />
-		<slot name="button" /><button on:click|preventDefault={() => dialog.close()}>Cancel</button>
+		<div class="flex gap-1">
+			<button class="btn btn-sm variant-soft-surface rounded-lg" on:click|preventDefault={() => dialog.close()}>
+				Cancel
+			</button>
+			<slot name="button" />
+		</div>
 	</div>
 </dialog>
 

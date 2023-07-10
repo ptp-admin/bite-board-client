@@ -49,6 +49,10 @@ export const newRecipeIngredientSchema = z.object({
 export type NewRecipIngredientSchema = typeof newRecipeIngredientSchema
 
 export const newRecipeSchema = z.object({
+	id: z
+    .coerce
+    .number()
+		.optional(),
   name: z
     .string({ required_error: 'Recipe name is required' })
     .min(1, { message: 'Recipe name is required' })

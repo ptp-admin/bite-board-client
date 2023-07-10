@@ -6,7 +6,7 @@ import { writable } from 'svelte/store'
 export type SortBy = {
 	category: boolean,
 	name: boolean,
-	costPer: boolean,
+	costIsDefined: boolean,
 	reverse: boolean,
 	showUndefined: boolean
 }
@@ -34,7 +34,7 @@ export const createSearchStore = (ingredients: Ingredient[]) => {
 		sortBy: {
 			category: false,
 			name: false,
-			costPer: false,
+			costIsDefined: false,
 			reverse: false,
 			showUndefined: false
 		}
@@ -45,20 +45,28 @@ export const createSearchStore = (ingredients: Ingredient[]) => {
 
 export const createSearchableIngredients = (ingredients: Ingredient[]) => {
 	return ingredients.map(ingredient => {
+		const costIsDefined = 
+			ingredient.costPer != null && 
+			ingredient.numberOf != null && 
+			ingredient.measurementUnit != null &&
+			ingredient.measurementUnit != ''
 		return {
 			...ingredient,
 			searchKeywords: `${ingredient.name} ${ingredient.category}`,
-			editable: false
+			editable: false,
+			costIsDefined
 		}
 	})
 }
 
 export const searchableIngredientsStructure = (ingredients: Ingredient[]) => {
 	const data = ingredients.map(ingredient => {
+		// const costIsDefined = ingredient.costPer != null && ingredient.numberOf != null && ingredient.measurementUnit != null
 		return {
 			...ingredient,
 			searchKeywords: `${ingredient.name} ${ingredient.category}`,
 			editable: false
+			// costIsDefined
 		}
 	})
 	
@@ -68,7 +76,7 @@ export const searchableIngredientsStructure = (ingredients: Ingredient[]) => {
 		sortBy: {
 			category: false,
 			name: false,
-			costPer: false,
+			costIsDefined: false,
 			reverse: false,
 			showUndefined: false
 		}

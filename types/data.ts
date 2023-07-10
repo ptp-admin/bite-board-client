@@ -6,7 +6,8 @@ export interface Ingredient {
   numberOf?: number,
 	editable?: boolean,
   measurementUnit?: string,
-	searchKeywords?: string
+	searchKeywords?: string,
+	costIsDefined?: boolean
 }
 
 export interface RecipeIngredient extends Ingredient {

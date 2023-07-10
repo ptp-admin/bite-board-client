@@ -16,7 +16,7 @@
 	})
 </script>
 
-<button on:click={() => showModal = !showModal}>delete</button>
+<button class="btn btn-sm h-8 rounded-lg bg-error-400" on:click={() => showModal = !showModal}>Delete</button>
 
 <Modal bind:showModal>
 	<h2 slot="header">
@@ -36,8 +36,8 @@
 	>
 		<input type="hidden" name ="id" hidden value={ingredient.id}>
 		<input type="hidden" name ="name" hidden value={ingredient.name}>
-		<button>
-			delete
+		<button class="btn btn-sm h-8 rounded-lg bg-error-400">
+			Delete
 		</button>
 	</form>
 </Modal>

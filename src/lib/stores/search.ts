@@ -11,6 +11,8 @@ export type SortBy = {
 	showUndefined: boolean
 }
 
+export type SortByOptions = 'category' | 'name' | 'costIsDefined'
+
 export type SearchableIngredientsStructure = {
 	data: Ingredient[],
 	filtered: Ingredient[],
@@ -27,7 +29,7 @@ export type SearchStore = {
 export const createSearchStore = (ingredients: Ingredient[]) => {
 	const data = createSearchableIngredients(ingredients)
 
-	const store = writable({
+	const store = writable<SearchStore>({
 		data,
 		filtered: data,
 		searchTerm: '',
@@ -61,12 +63,10 @@ export const createSearchableIngredients = (ingredients: Ingredient[]) => {
 
 export const searchableIngredientsStructure = (ingredients: Ingredient[]) => {
 	const data = ingredients.map(ingredient => {
-		// const costIsDefined = ingredient.costPer != null && ingredient.numberOf != null && ingredient.measurementUnit != null
 		return {
 			...ingredient,
 			searchKeywords: `${ingredient.name} ${ingredient.category}`,
 			editable: false
-			// costIsDefined
 		}
 	})
 	
@@ -88,35 +88,46 @@ export const searchHandler = (store: SearchStore, ingredientData?: Ingredient[])
 	const searchTerm = store.searchTerm.toLowerCase() || ""
 
 	// Search filter
-	store.filtered = store.data.filter((item) => {	
+	store.filtered = store.data.filter((item) => {
+		if (item.searchKeywords)
 			return item.searchKeywords.toLowerCase().includes(searchTerm)
 	}).reverse()
 
+	/* 
+	Returns an array of properties which the user has selected to sort Ingredients by. E.g.
+	sortBy: {
+		category: true,
+		name: false,
+		costIsDefined: true,
+		reverse: true,
+		showUndefined: false
+	}
+	returns ['category', 'costIsDefined', 'reversed'] 
+	*/
 	const sortByArray = _.map(store.sortBy, (value, key) => {
 		if (value)
 			return key
 	}).filter(boolean => boolean)
-	
+
+	// Create arrays to catch sorted/filtered Ingredients
+	const definedArray: Ingredient[] = []
+	const undefinedArray: Ingredient[] = []
 	if (sortByArray.length > 0){
-		const sortedDefinedArrays = store.filtered.reduce((r, current) => {
+		store.filtered.forEach(ingredient => {
+			// Remove 'reverse' and 'showUndefined' as they don't map to Ingredient properties
 			const sortByIngredientProperties = sortByArray.filter(e => e !== 'reverse' && e !== 'showUndefined')
-
+			// Map over the remaining sortBy properties, and check whether the ingredient has a value assigned to that property
 			const defined = sortByIngredientProperties.map(property => {
-				return Boolean(current[property])
+				return Boolean(ingredient[property as SortByOptions])
 			})
-
+			// If all of the selected properties are defined, push to defined, else, push to undefined
 			defined.every(bool => bool)
-			? r.defined.push(current)
-			: r.undefined.push(current)
+			? definedArray.push(ingredient)
+			: undefinedArray.push(ingredient)
+		})
 
-			return r
-		}, {
-			defined: [],
-			undefined: []
-		});
-
-		store.filtered = _.sortBy(sortedDefinedArrays.defined, sortByArray)
+		store.filtered = _.sortBy(definedArray, sortByArray) as Ingredient[]
 		if (store.sortBy.reverse) store.filtered = store.filtered.reverse()
-		if (store.sortBy.showUndefined) store.filtered = store.filtered.concat(sortedDefinedArrays.undefined)
+		if (store.sortBy.showUndefined) store.filtered = store.filtered.concat(undefinedArray)
 	}
 }

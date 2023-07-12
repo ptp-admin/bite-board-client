@@ -4,10 +4,7 @@
 	import '../app.postcss';		
 	import 'iconify-icon'
 	import { page } from '$app/stores';
-
-	// Skeleton Features
-	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
-	import { Drawer, drawerStore } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, Drawer, drawerStore, LightSwitch } from '@skeletonlabs/skeleton';
 
 	// Local Features
 	import Navigation from '../components/Navigation.svelte';
@@ -33,7 +30,7 @@
 </Drawer>
 
 <!-- App Shell -->
-<AppShell slotSidebarLeft="bg-surface-500/5 w-0 lg:w-64 {classesSidebarLeft}">
+<AppShell slotSidebarLeft="bg-surface-900/10 w-0 lg:w-64 {classesSidebarLeft}">
 	<svelte:fragment slot="header">
 		<!-- App Bar -->
 		<AppBar background='bg-primary-500'>
@@ -52,6 +49,7 @@
 				</div>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
+				<LightSwitch />
 				<!-- <a class="btn btn-sm" href="/">Home</a>
 				<a class="btn btn-sm" href="/about">About</a> -->
 			</svelte:fragment>

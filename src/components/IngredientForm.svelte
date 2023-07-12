@@ -2,7 +2,6 @@
 	import type { SuperValidated } from 'sveltekit-superforms';
 	import type { NewIngredientSchema } from '../schemas';
 
-	import { page } from '$app/stores';
 	import { beforeUpdate } from 'svelte';
 	import { superForm } from 'sveltekit-superforms/client';
 
@@ -11,6 +10,17 @@
 	export let formId: string;
 	export let measurementUnitOptions: string[];
 	export let ingredient: any = null; // TODO update this type
+
+	// Conditional styling for the 'Add New Ingredient' card only
+	let inputClass = 'input bg-surface-50 focus:outline-none focus:ring-0 h-8 py-1 px-2.5 rounded-lg'
+	let selectClass = 'select h-8 py-1 px-1.5 bg-surface-50 focus:outline-none focus:ring-0 rounded-lg'
+	if (action === '?/create') {
+		inputClass = inputClass.concat(' shadow-md')
+		selectClass = selectClass.concat(' shadow-md')
+	} else {
+		inputClass = inputClass.concat(' border-surface-700')
+		selectClass = selectClass.concat(' border-surface-700')
+	}
 
 	const { form, errors, enhance } = superForm(data, {
 		id: formId,
@@ -46,16 +56,13 @@
 				<label class="h-6 font-medium" for="name">Name</label>
 			{/if}
 			<input
-				class="input h-8 py-1 px-2.5 rounded-lg"
+				class={inputClass}
 				placeholder={$form.id ? 'Name' : ''}
 				type="text"
 				id="name"
 				name="name"
 				bind:value={$form.name}
 			/>
-			{#if $errors.name}
-				<small style="color: red">{$errors.name}</small>
-			{/if}
 		</div>
 		<!-- Category -->
 		<div class="w-1/3">
@@ -63,7 +70,7 @@
 				<label class="h-6 font-medium" for="category">Category</label>
 			{/if}
 			<input
-				class="input h-8 py-1 px-2.5 rounded-lg"
+				class={inputClass}
 				placeholder={$form.id ? 'Category' : ''}
 				type="text"
 				id="category"
@@ -84,7 +91,7 @@
 			{/if}
 			<input
 				placeholder={$form.id ? 'Cost' : ''}
-				class="input h-8 py-1 px-2.5 rounded-lg"
+				class={inputClass}
 				type="text"
 				id="costPer"
 				name="costPer"
@@ -104,7 +111,7 @@
 			{/if}
 			<input
 				placeholder={$form.id ? 'Num' : ''}
-				class="input h-8 py-1 px-2.5 rounded-lg"
+				class={inputClass}
 				type="text"
 				id="numberOf"
 				name="numberOf"
@@ -120,7 +127,7 @@
 				<label class="h-6 font-medium" for="measurementUnit">Unit</label>
 			{/if}
 			<select
-				class="select h-8 py-1 px-1.5"
+				class={selectClass}
 				bind:value={$form.measurementUnit}
 				name="measurementUnit"
 			>
@@ -142,14 +149,17 @@
 			>
 		{:else}
 		<!-- Add New Ingredient -->
-			<button class="btn btn-sm w-1/12 h-8 bg-primary-500 mt-6 rounded-lg">Add</button>
+			<button class="btn btn-sm w-1/12 h-8 bg-primary-500 mt-6 rounded-lg shadow-md">Add</button>
 		{/if}
 		<slot />
 	</div>
+	{#if $errors.name}
+		<small class="text-error-500 ml-1">{$errors.name}</small>
+	{/if}
 	{#if action === '?/create'}
 	<div class="mt-4">
 		<p class="font-medium">Preview</p>
-		<div class="bg-surface-200 rounded-lg py-2 px-3 flex flex-row justify-between">
+		<div class="rounded-lg variant-ghost-surface py-2 px-3 flex flex-row justify-between shadow-md">
 			<div class="w-1/3">{$form.name ? $form.name : 'Ingredient Name'}</div>
 			<div class="w-1/3">{$form.category ? $form.category : 'Category'}</div>
 			<div class="w-1/3">${$form.costPer}/{$form.numberOf}{$form.measurementUnit ? $form.measurementUnit : 'g'}</div>

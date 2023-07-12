@@ -17,5 +17,20 @@ module.exports = {
 	plugins: [
 		// 3. Append the Skeleton plugin to the end of this list
 		...require('@skeletonlabs/skeleton/tailwind/skeleton.cjs')()
-	]
+	],
+		"colors": {
+			"ivory": {
+				50: "#FCFCFC",
+				100: "#FCFCFC",
+				200: "#F7F7F7",
+				300: "#F5F5F5",
+				400: "#F2F2F2",
+				500: "#EEEEEE",
+				600: "#D6D6D6",
+				700: "#BDBDBD",
+				800: "#9E9E9E",
+				900: "#737373",
+				950: "#545454"
+			}
+		}
 }

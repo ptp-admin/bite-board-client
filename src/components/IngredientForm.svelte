@@ -159,7 +159,7 @@
 	{#if action === '?/create'}
 	<div class="mt-4">
 		<p class="font-medium">Preview</p>
-		<div class="rounded-lg variant-ghost-surface py-2 px-3 flex flex-row justify-between shadow-md">
+		<div class="rounded-lg bg-surface-100/30 py-2 px-3 flex flex-row justify-between shadow-md">
 			<div class="w-1/3">{$form.name ? $form.name : 'Ingredient Name'}</div>
 			<div class="w-1/3">{$form.category ? $form.category : 'Category'}</div>
 			<div class="w-1/3">${$form.costPer}/{$form.numberOf}{$form.measurementUnit ? $form.measurementUnit : 'g'}</div>

@@ -5,20 +5,12 @@
 	import 'iconify-icon'
 	import { page } from '$app/stores';
 	import { AppShell, AppBar, Drawer, drawerStore, LightSwitch } from '@skeletonlabs/skeleton';
-
-	// Local Features
 	import Navigation from '../components/Navigation.svelte';
-
-	// Stylesheets
-	import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
-	import '@skeletonlabs/skeleton/styles/all.css';
-	import '../app.postcss';
 
 	function drawerOpen(): void {
 		drawerStore.open({});
 	}
 
-	// Reactive Properties
 	$: classesSidebarLeft = $page.url.pathname === '/' ? 'w-0' : 'w-0 lg:w-64';
 </script>
 

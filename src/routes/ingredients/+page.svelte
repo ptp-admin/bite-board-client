@@ -8,6 +8,7 @@
 		createSearchableIngredients
 	} from '../../lib/stores/search';
 	import { beforeUpdate, onDestroy, onMount } from 'svelte/internal';
+	import { styleStore } from '$lib/stores/styles';
 	import axios from 'axios';
 	import _ from 'lodash';
 	import DeleteIngredientButton from '../../components/DeleteIngredientButton.svelte';
@@ -94,45 +95,57 @@
 </script>
 
 <!-- New Ingredient Card -->
-<div class="card flex flex-col gap-3 p-5 -m-5 shadow-md bg-surface-600/50">
-	<h3 class="mt-0">Add New Ingredient</h3>
+<div class={`${$styleStore.card} p-5 -m-5`}>
+	<h3>Add New Ingredient</h3>
 	<IngredientForm formId={'add'} data={data.form} action={'?/create'} {measurementUnitOptions} />
 </div>
 
-<h3 class="pt-12">Ingredients Database</h3>
+<div class="pt-12">
+	<h3>Ingredients Database</h3>
+</div>
 <input
-	class="input bg-surface-50 border-surface-700 focus:outline-none focus:ring-0 h-8 py-1 px-2.5 rounded-lg w-full"
 	type="search"
 	placeholder="Search by name or category"
 	bind:value={$searchStore.searchTerm}
 />
-<div class="py-1 flex flex-row items-center gap-5">
-	<b>{$searchStore.filtered.length} {$searchStore.filtered.length === 1 ? 'result' : 'results'}</b> |
-	<b>Sort by:</b>
-	<div class="flex flex-row items-center gap-1">
-		<input class="checkbox" type="checkbox" bind:checked={$searchStore.sortBy.category} /> Category
+<div class="py-1 flex flex-col lg:flex-row lg:items-center gap-5">
+	<div class="flex items-center gap-5 font-medium">
+		<div class="font-semibold">
+			{$searchStore.filtered.length}
+			{$searchStore.filtered.length === 1 ? 'result' : 'results'}
+		</div>
+		|
+		<div class="font-semibold">Sort by:</div>
 	</div>
-	<div class="flex flex-row items-center gap-1">
-		<input class="checkbox" type="checkbox" bind:checked={$searchStore.sortBy.name} /> Name
-	</div>
-	<div class="flex flex-row items-center gap-1">
-		<input class="checkbox" type="checkbox" bind:checked={$searchStore.sortBy.costIsDefined} /> Cost
-	</div>
-	<div class="flex flex-row items-center gap-1">
-		<input class="checkbox" type="checkbox" bind:checked={$searchStore.sortBy.reverse} /> Reverse
-	</div>
-	<div class="flex flex-row items-center gap-1">
-		<input class="checkbox" type="checkbox" bind:checked={$searchStore.sortBy.showUndefined} />Show
-		Undefined
+	<div class="flex items-center gap-5">
+		<div class="flex flex-row items-center gap-1">
+			<input class="checkbox" type="checkbox" bind:checked={$searchStore.sortBy.category} /> Category
+		</div>
+		<div class="flex flex-row items-center gap-1">
+			<input class="checkbox" type="checkbox" bind:checked={$searchStore.sortBy.name} /> Name
+		</div>
+		<div class="flex flex-row items-center gap-1">
+			<input class="checkbox" type="checkbox" bind:checked={$searchStore.sortBy.costIsDefined} /> Cost
+		</div>
+		<div class="flex flex-row items-center gap-1">
+			<input class="checkbox" type="checkbox" bind:checked={$searchStore.sortBy.reverse} /> Reverse
+		</div>
+		<div class="flex flex-row items-center gap-1">
+			<input
+				class="checkbox"
+				type="checkbox"
+				bind:checked={$searchStore.sortBy.showUndefined}
+			/>Show Undefined
+		</div>
 	</div>
 </div>
 
 <div class="space-y-0 shadow-xl rounded-lg">
 	<!-- Ingredient Table Header -->
 	<div class="pl-3 pr-9 py-2 variant-filled-primary rounded-t-lg flex flex-row justify-between">
-		<div class="w-1/3 font-semibold">Ingredient Name</div>
-		<div class="w-1/3 font-semibold">Category</div>
-		<div class="w-1/3 font-semibold">Cost</div>
+		<div class="w-5/12 lg:w-1/3 font-semibold">Ingredient Name</div>
+		<div class="w-4/12 lg:w-1/3 font-semibold">Category</div>
+		<div class="w-3/12 lg:w-1/3 font-semibold">Cost</div>
 	</div>
 	<!-- Ingredient Table Contents -->
 	{#if $searchStore.filtered.length === 0}
@@ -142,15 +155,15 @@
 		<div class={i % 2 == 1 ? 'bg-surface-600/50 m-0' : 'm-0'}>
 			{#if !ingredient.editable}
 				<div class="py-1 pl-3 pr-1 flex flex-row justify-between items-center">
-					<div class="w-1/3">{ingredient.name}</div>
-					<div class="w-1/3">
+					<div class="w-5/12 lg:w-1/3">{ingredient.name}</div>
+					<div class="w-4/12 lg:w-1/3">
 						{#if ingredient.category}
 							{ingredient.category}
 						{:else}
 							-
 						{/if}
 					</div>
-					<div class="w-1/3">
+					<div class="w-3/12 lg:w-1/3">
 						{#if ingredient.costIsDefined}
 							${ingredient.costPer}/{ingredient.numberOf}{ingredient.measurementUnit}
 						{:else}
@@ -159,7 +172,7 @@
 					</div>
 					<!-- Edit Ingredient Button -->
 					<button
-						class="btn btn-sm bg-surface-400 w-8 h-8 rounded-lg variant-soft-surface justify-self-end"
+						class={`${$styleStore.btnSurface} w-8 justify-self-end`}
 						on:click={() => {
 							ingredient.editable = !ingredient.editable;
 						}}
@@ -185,11 +198,11 @@
 							<div>
 								<!-- Close/ Exit Edit -->
 								<button
-									class="btn btn-sm bg-surface-400 w-8 h-8 rounded-lg variant-soft-surface"
-									on:click={() => (ingredient.editable = !ingredient.editable)}>
-										<iconify-icon icon="ic:baseline-close" />
-									</button
+									class={`${$styleStore.btnSurface} w-8`}
+									on:click={() => (ingredient.editable = !ingredient.editable)}
 								>
+									<iconify-icon icon="ic:baseline-close" />
+								</button>
 							</div>
 						</IngredientForm>
 					{/if}
@@ -199,9 +212,8 @@
 	{/each}
 	<!-- Ingredient Table Footer -->
 	<div class="pl-3 pr-9 py-2 variant-filled-primary rounded-b-lg flex flex-row justify-between">
-		<div class="w-1/3 font-semibold">Ingredient Name</div>
-		<div class="w-1/3 font-semibold">Category</div>
-		<div class="w-1/3 font-semibold">Cost</div>
+		<div class="w-5/12 lg:w-1/3 font-semibold">Ingredient Name</div>
+		<div class="w-4/12 lg:w-1/3 font-semibold">Category</div>
+		<div class="w-3/12 lg:w-1/3 font-semibold">Cost</div>
 	</div>
 </div>
-

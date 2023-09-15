@@ -126,6 +126,7 @@ export const searchHandler = (store: SearchStore, ingredientData?: Ingredient[])
 			: undefinedArray.push(ingredient)
 		})
 
+		// TODO this lodash sortBy function is case-sensitive. Change it to be case-insensitive.
 		store.filtered = _.sortBy(definedArray, sortByArray) as Ingredient[]
 		if (store.sortBy.reverse) store.filtered = store.filtered.reverse()
 		if (store.sortBy.showUndefined) store.filtered = store.filtered.concat(undefinedArray)

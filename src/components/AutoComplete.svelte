@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Ingredient } from '../../types/data';
 	import { onMount } from 'svelte';
+	import { styleStore } from '$lib/stores/styles';
 	import axios from 'axios';
 
 	export let data: any;
@@ -11,10 +12,25 @@
 	let searchResults: Ingredient[] = [];
 	let searchTerm = '';
 
+	// TODO Come back to this
+	const highlightSearchTerm = (searchTerm: string, inputString: string) => {
+		var regex = new RegExp(searchTerm, "gi");
+		var highlightedString = inputString.replace(regex, `<!-- --><span class="font-bold">$&</span><!-- -->`);
+		console.log(highlightedString);
+		
+		return highlightedString;
+	}
+
 	const filterIngredients = () => {
 		searchResults = ingredients
 			.filter((ingredient) => ingredient.name.toLowerCase().includes(searchTerm.toLowerCase()))
-			.concat({ name: `Add ingredient: ${searchTerm}` });
+			.concat({ name: `New Ingredient: ${searchTerm}` })
+			// .map(ingredient => {
+			// 	return {
+			// 		...ingredient,
+			// 		highlightedName: highlightSearchTerm(searchTerm, ingredient.name)
+			// 	}
+			// });
 	};
 
 	const selectIngredient = (ingredient: Ingredient) => {
@@ -59,41 +75,48 @@
 </script>
 
 <div class="autocomplete-input">
-	<h3>Ingredients</h3>
 	{#if searchTerm.length > 0}
-		<div class="autocomplete-dropdown">
+		<div class="autocomplete-dropdown -mt-2">
 			{#each searchResults as result}
-					<button class="autocomplete-dropdown-item" on:click={() => result.id ? selectIngredient(result) : selectIngredient({name: searchTerm})}>
-						{result.name}
+				{#if result.id}
+					<button class={`${$styleStore.btnTertiaryOutline} bg-surface-50 m-0.5`} on:click={() => result.id ? selectIngredient(result) : selectIngredient({name: searchTerm})}>
+						{@html result.name}
 					</button>
+				{:else}
+					<button class={`${$styleStore.btnPrimaryOutline} bg-surface-50 m-0.5`} on:click={() => result.id ? selectIngredient(result) : selectIngredient({name: searchTerm})}>
+						{@html result.name}
+					</button>
+				{/if}
 			{/each}
 		</div>
 	{/if}
 	{#each $form.recipeIngredients as ingredient}
-		<div class="flex-container" style="padding-bottom: 0.5em; width: 97.5%">
-			<div class="half-width">{ingredient.name}</div>
-			<div class="flex-container half-width">
-				<div>
-					<input
-						placeholder="100"
-						bind:value={ingredient.recipeNumberOf}
-						id="grid-first-name"
-						type="text"
-					/>
-				</div>
-				<div>
-					<select bind:value={ingredient.recipeMeasurementUnit} name="measurementUnit">
-						{#each measurementUnitOptions as measurementUnit}
-							<option value={measurementUnit}>{measurementUnit}</option>
-						{/each}
-					</select>
-				</div>
-				<button on:click|preventDefault={() => removeIngredient(ingredient)}> remove </button>
+		<div class="flex pb-1 gap-2">
+			<div class="w-1/2 pl-2">{ingredient.name}</div>
+			<div class="flex w-1/2 gap-1">
+				<input
+					class={$styleStore.input}
+					placeholder="100"
+					bind:value={ingredient.recipeNumberOf}
+					type="text"
+				/>
+				<select class={`${$styleStore.select}`} bind:value={ingredient.recipeMeasurementUnit} name="measurementUnit">
+					{#each measurementUnitOptions as measurementUnit}
+						<option value={measurementUnit}>{measurementUnit}</option>
+					{/each}
+				</select>
+				<button
+					class={`${$styleStore.btnTertiaryOutline} w-8`}
+					on:click|preventDefault={() => removeIngredient(ingredient)}
+				>
+					<iconify-icon icon="ic:baseline-close" />
+				</button>
 			</div>
 		</div>
 	{/each}
 	<input
 		type="text"
+		class={`${$styleStore.input} mt-1`}
 		placeholder="Search for ingredients..."
 		style="margin-bottom: 1em"
 		bind:value={searchTerm}
@@ -108,7 +131,7 @@
 
 	.autocomplete-dropdown {
 		position: absolute;
-		width: 93%;
+		width: 100%;
 		top: 100%;
 		left: 0;
 		right: 0;
@@ -117,33 +140,5 @@
 		border-radius: 4px;
 		overflow-y: auto;
 		z-index: 100;
-	}
-
-	.autocomplete-dropdown-item {
-		cursor: pointer;
-		padding: 0.25rem 0.5rem;
-		background-color: #ffffff;
-	}
-
-	.autocomplete-dropdown-item:focus {
-		background-color: #e0e0e0;
-	}
-
-	.flex-container {
-		display: flex;
-		flex-direction: row;
-		width: 100%;
-	}
-
-	h3 {
-		margin: 0.25em 0;
-	}
-
-	input {
-		width: 95%;
-	}
-
-	.half-width {
-		width: 50%;
 	}
 </style>

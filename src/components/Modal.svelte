@@ -1,9 +1,9 @@
 <script lang="ts">
+	import { styleStore } from "$lib/stores/styles";
 	export let showModal: boolean;
+	export let dialogClass = $styleStore.dialog
 
 	let dialog: any; // HTMLDialogElement
-	export let dialogClass = ''
-
 	$: if (dialog && showModal) dialog.showModal();
 </script>
 
@@ -14,11 +14,11 @@
 	on:close|preventDefault={() => (showModal = false)}
 	on:click|self={() => dialog.close()}
 >
-	<div on:click|stopPropagation>
+	<div class={$styleStore.card} on:click|stopPropagation>
 		<slot name="header" />
 		<slot />
-		<div class="flex gap-1">
-			<button class="btn btn-sm variant-soft-surface rounded-lg" on:click|preventDefault={() => dialog.close()}>
+		<div class="flex gap-1 place-content-end">
+			<button class={$styleStore.btnSurface} on:click|preventDefault={() => dialog.close()}>
 				Cancel
 			</button>
 			<slot name="button" />
@@ -28,8 +28,7 @@
 
 <style>
 	dialog {
-		max-width: 60%;
-		border-radius: 0.2em;
+		max-width: 90%;
 		border: none;
 		padding: 0;
 	}
@@ -60,8 +59,5 @@
 		to {
 			opacity: 1;
 		}
-	}
-	button {
-		display: block;
 	}
 </style>

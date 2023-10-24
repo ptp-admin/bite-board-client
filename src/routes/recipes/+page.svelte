@@ -1,20 +1,49 @@
 <script lang="ts">
-    import type { PageData } from './$types';
+	import type { PageData } from './$types';
+	import { styleStore } from '$lib/stores/styles';
+	import { costAccuracyBgColor } from '$lib/helper';
+	import type { Recipe } from '../../../types/data';
+	export let data: PageData;
 
-    export let data: PageData;
+	const recipes: Recipe[] = data.recipes.map((recipe: Recipe) => {
+		if (!recipe.servings) recipe.servings = 1;
+		return recipe;
+	});
 </script>
 
-<h2>Recipes Database</h2>
+<div class="flex gap-4 items-center">
+	<h2>Recipes Database</h2>
+	<a href="/recipes/add">
+		<button class={$styleStore.btnPrimary}>
+			<iconify-icon icon="ic:baseline-plus" />
+			Add Recipe
+		</button>
+	</a>
+</div>
 
-<a href="/recipes/add">
-	<button>Add Recipe</button>
-</a>
+<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+	{#each data.recipes as recipe}
+		<div class={`${$styleStore.card} justify-between`}>
+			<!-- Recipe Title -->
+			<a href="recipes/{recipe.id}">
+				<h3>{recipe.name}</h3>
+			</a>
 
-{#each data.recipes as recipe}
-	<p>
-		<a href="recipes/{recipe.id}">
-			{recipe.name}
-		</a>
-		| {recipe.servings} Serves @ ${recipe.costPerServe}/Serve
-	</p>
-{/each}
+			<!-- Recipe Badges -->
+			<div class="flex gap-1">
+				<span class={$styleStore.badge}>{recipe.servings} Serves</span>
+				<span class="{$styleStore.badge} {costAccuracyBgColor(recipe.costAccuracy)}"
+					>${recipe.costPerServe}/Serve</span
+				>
+			</div>
+			<!-- Recipe Button/s -->
+			<div class="flex flex-col xl:flex-row gap-1">
+				<a class={`${$styleStore.btnSurface} w-full`} href="recipes/{recipe.id}"> View Recipe </a>
+				<a class={`${$styleStore.btnTertiaryOutline} w-full`} href="">
+					<iconify-icon icon="ic:baseline-plus" />
+					Add to Shopping List
+				</a>
+			</div>
+		</div>
+	{/each}
+</div>

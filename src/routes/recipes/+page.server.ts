@@ -12,7 +12,7 @@ export const load = (async () => {
     route: `/recipes/`
   })
   // return if successful
-  if (recipes) return {recipes: recipes.data}
+  if (recipes) return {recipes: recipes.data.reverse()}
   // error if not
   throw error(404, 'Not found');
 }) satisfies PageServerLoad;

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Editor from '@tinymce/tinymce-svelte';
 	import AutoComplete from './AutoComplete.svelte';
+	import { styleStore } from '$lib/stores/styles';
 	import type { Recipe } from '../../types/data';
 
 	export let data: any
@@ -27,60 +28,50 @@
 	form.set(recipe);
 </script>
 
-<form method="POST" action={action} class="bg-gray-200 p-6" use:enhance>
-	<div class="flex-container">
+<form method="POST" action={action} class={$styleStore.card} use:enhance>
+	<div class="flex flex-col lg:flex-row gap-4">
 		<!-- Left Side -->
-		<div class="half-width">
-			<div class="flex-container">
-				<!-- Name -->
-				<div class="half-width">
-					<label for="name"><h3>Name</h3></label>
-					<input type="text" id="name" name="name" bind:value={$form.name} />
-					{#if $errors.name}
-						<small style="color: red">{$errors.name}</small>
-					{/if}
+		<div class="flex flex-col gap-2 lg:w-1/2 justify-between">
+			<div>
+				<div class="flex gap-2">
+					<!-- Name -->
+					<div class="w-1/2">
+						<label class={$styleStore.label} for="name">Name</label>
+						<input class={$styleStore.input} type="text" id="name" name="name" bind:value={$form.name} />
+						{#if $errors.name}
+							<small style="color: red">{$errors.name}</small>
+						{/if}
+					</div>
+					<!-- Servings -->
+					<div class="w-1/2">
+						<label class={$styleStore.label} for="servings">Servings</label>
+						<input class={$styleStore.input} type="text" id="servings" name="servings" bind:value={$form.servings} />
+						{#if $errors.servings}
+							<small style="color: red">{$errors.servings}</small>
+						{/if}
+					</div>
 				</div>
-				<!-- Servings -->
-				<div class="half-width">
-					<label for="servings"><h3>Servings</h3></label>
-					<input type="text" id="servings" name="servings" bind:value={$form.servings} />
-					{#if $errors.servings}
-						<small style="color: red">{$errors.servings}</small>
-					{/if}
-				</div>
+				<!-- Ingredients -->
+				<p class={$styleStore.label}>Ingredients</p>
+				<AutoComplete {data} {form} />
 			</div>
-			<!-- Ingredients -->
-			<AutoComplete {data} {form} />
-
-			<!-- Submit -->
-			<slot />
+			<div class="hidden lg:flex lg:gap-2">
+				<slot />
+			</div>
 		</div>
+
 		<!-- Right Side -->
-		<div class="half-width">
+		<div class="lg:w-1/2">
 			<!-- Method -->
 			<div>
-				<label for="method"><h3>Method</h3></label>
+				<label class={$styleStore.label} for="method">Method</label>
 				<Editor {apiKey} bind:value={$form.method} />
 			</div>
 		</div>
 	</div>
+	<!-- Submit -->
+	<div class="flex gap-2 lg:hidden">
+		<slot />
+	</div>
 </form>
 
-<style>
-	h3 {
-		margin: 0.25em 0;
-	}
-	input {
-		width: 90%;
-	}
-
-	.flex-container {
-		display: flex;
-		flex-direction: row;
-		width: 100%;
-	}
-
-	.half-width {
-		width: 50%;
-	}
-</style>

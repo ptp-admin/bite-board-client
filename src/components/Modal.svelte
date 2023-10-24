@@ -1,30 +1,34 @@
 <script lang="ts">
+	import { styleStore } from "$lib/stores/styles";
 	export let showModal: boolean;
+	export let dialogClass = $styleStore.dialog
 
 	let dialog: any; // HTMLDialogElement
-
 	$: if (dialog && showModal) dialog.showModal();
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <dialog
+	class={dialogClass}
 	bind:this={dialog}
 	on:close|preventDefault={() => (showModal = false)}
 	on:click|self={() => dialog.close()}
 >
-	<div on:click|stopPropagation>
+	<div class={$styleStore.card} on:click|stopPropagation>
 		<slot name="header" />
-		<hr />
 		<slot />
-		<hr />
-		<slot name="button" /><button on:click|preventDefault={() => dialog.close()}>Cancel</button>
+		<div class="flex gap-1 place-content-end">
+			<button class={$styleStore.btnSurface} on:click|preventDefault={() => dialog.close()}>
+				Cancel
+			</button>
+			<slot name="button" />
+		</div>
 	</div>
 </dialog>
 
 <style>
 	dialog {
-		max-width: 60%;
-		border-radius: 0.2em;
+		max-width: 90%;
 		border: none;
 		padding: 0;
 	}
@@ -55,8 +59,5 @@
 		to {
 			opacity: 1;
 		}
-	}
-	button {
-		display: block;
 	}
 </style>

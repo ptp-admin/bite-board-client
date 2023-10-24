@@ -1,0 +1,35 @@
+/* Write your global styles here, in PostCSS syntax */
+
+html, body { @apply h-full overflow-hidden; }
+
+@tailwind base;
+
+@layer base {
+  h1 {
+    @apply -mt-1 font-semibold text-2xl;
+  }
+  h2 {
+    @apply -mt-1 font-semibold text-xl;
+  }
+  h3 {
+    @apply -mt-1 font-semibold text-lg;
+  }
+	input {
+		@apply input bg-surface-50 focus:outline-none focus:ring-0 focus:border-tertiary-500 h-8 py-1 px-2.5 rounded-lg border-surface-700
+	}
+	select {
+		@apply input bg-surface-50 focus:outline-none focus:ring-0 focus:border-tertiary-500 h-8 py-1 px-2.5 rounded-lg border-surface-700
+	}
+	ul {
+		@apply list-disc ml-5;
+		@apply mb-3
+	}
+	ol {
+		@apply list-decimal ml-5;
+		@apply mb-3
+	}
+}
+
+@tailwind components;
+
+@tailwind utilities;

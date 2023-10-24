@@ -2,6 +2,7 @@
 	import { superForm } from 'sveltekit-superforms/client';
 	import type { PageData } from './$types';
 	import RecipeForm from '../../../components/RecipeForm.svelte';
+	import { styleStore } from '$lib/stores/styles';
 
 	export let data: PageData;
 
@@ -12,12 +13,12 @@
 	});
 </script>
 
-<!-- svelte-ignore a11y-invalid-attribute -->
-<a href="javascript:history.back()" class="btn btn-sm btn-outline mb-3">
-	<button>Back</button>
-</a>
-<h1>Create New Recipe</h1>
-
+<ol class="breadcrumb m-0">
+	<li class="crumb"><a class="anchor" href="/recipes">Recipes</a></li>
+	<li class="crumb-separator" aria-hidden>&rsaquo;</li>
+	<li>Add Recipe</li>
+</ol>
+<h2>Create New Recipe</h2>
 <RecipeForm {data} {form} {errors} {enhance}>
-	<button>Add Recipe</button>
+	<button class={$styleStore.btnPrimary}>Add Recipe</button>
 </RecipeForm>

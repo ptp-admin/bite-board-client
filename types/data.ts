@@ -1,13 +1,13 @@
 export interface Ingredient {
-	id?: number,
+  id?: number,
   name: string,
   category?: string,
-	costPer?: number,
+  costPer?: number,
   numberOf?: number,
-	editable?: boolean,
+  editable?: boolean,
   measurementUnit?: string,
-	searchKeywords?: string,
-	costIsDefined?: boolean
+  searchKeywords?: string,
+  costIsDefined?: boolean
 }
 
 export interface RecipeIngredient extends Ingredient {
@@ -17,13 +17,46 @@ export interface RecipeIngredient extends Ingredient {
   derivedCost?: number;
 }
 
-export interface Recipe {
-  id?: number;
-  name: string;
+export interface Recipe extends ShoppingListRecipe {
   method: string;
-  servings?: number;
   recipeIngredients?: RecipeIngredient[];
   costPerServe?: number;
-	costAccuracy?: number;
-	editable?: boolean;
+  costAccuracy?: number;
+  editable?: boolean;
+}
+
+export interface ShoppingListRecipe {
+  id?: number;
+  name: string;
+  servings?: number;
+}
+
+export interface ShoppingListIngredient {
+  id?: number;
+  name: string;
+  category?: string;
+  derivedCost?: number;
+  numberOf?: number;
+  unit?: string;
+  recipesIds?: number[];
+}
+
+export interface ShoppingList {
+  id?: number;
+  name: string,
+  servings: number,
+  cost: number,
+  recipes: ShoppingListRecipe[]
+  ingredients: [
+    {
+      id: 1,
+      name: 'Ingredient Name',
+      category: 'Category',
+      derivedCost: 14,
+      numberOf: 500,
+      unit: 'g',
+      recipesIds: [1, 4]
+    }
+  ]
+
 }

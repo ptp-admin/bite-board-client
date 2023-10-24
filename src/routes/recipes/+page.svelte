@@ -21,7 +21,7 @@
 	</a>
 </div>
 
-<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+<div class="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
 	{#each data.recipes as recipe}
 		<div class={`${$styleStore.card} justify-between`}>
 			<!-- Recipe Title -->
@@ -30,14 +30,14 @@
 			</a>
 
 			<!-- Recipe Badges -->
-			<div class="flex gap-1">
+			<div class="flex gap-2">
 				<span class={$styleStore.badge}>{recipe.servings} Serves</span>
 				<span class="{$styleStore.badge} {costAccuracyBgColor(recipe.costAccuracy)}"
 					>${recipe.costPerServe}/Serve</span
 				>
 			</div>
 			<!-- Recipe Button/s -->
-			<div class="flex flex-col xl:flex-row gap-1">
+			<div class="flex flex-col xl:flex-row gap-4">
 				<a class={`${$styleStore.btnSurface} w-full`} href="recipes/{recipe.id}"> View Recipe </a>
 				<a class={`${$styleStore.btnTertiaryOutline} w-full`} href="">
 					<iconify-icon icon="ic:baseline-plus" />

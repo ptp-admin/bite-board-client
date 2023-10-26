@@ -11,12 +11,12 @@
 	});
 </script>
 
-<div class="flex gap-4 items-center">
-	<h2>Recipes Database</h2>
+<div class="flex flex-col gap-4">
+	<h1>Recipes</h1>
 	<a href="/recipes/add">
 		<button class={$styleStore.btnPrimary}>
 			<iconify-icon icon="ic:baseline-plus" />
-			Add Recipe
+			Create Recipe
 		</button>
 	</a>
 </div>
@@ -24,17 +24,19 @@
 <div class="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
 	{#each data.recipes as recipe}
 		<div class={`${$styleStore.card} justify-between`}>
-			<!-- Recipe Title -->
-			<a href="recipes/{recipe.id}">
-				<h3>{recipe.name}</h3>
-			</a>
+			<div class="flex justify-between">
+				<!-- Recipe Title -->
+				<a href="recipes/{recipe.id}">
+					<h3>{recipe.name}</h3>
+				</a>
 
-			<!-- Recipe Badges -->
-			<div class="flex gap-2">
-				<span class={$styleStore.badge}>{recipe.servings} Serves</span>
-				<span class="{$styleStore.badge} {costAccuracyBgColor(recipe.costAccuracy)}"
-					>${recipe.costPerServe}/Serve</span
-				>
+				<!-- Recipe Badges -->
+				<div class="flex gap-2">
+					<span class={$styleStore.badge}>{recipe.servings} Serves</span>
+					<span class="{$styleStore.badge} {costAccuracyBgColor(recipe.costAccuracy)}"
+						>${recipe.costPerServe}/Serve</span
+					>
+				</div>
 			</div>
 			<!-- Recipe Button/s -->
 			<div class="flex flex-col xl:flex-row gap-4">

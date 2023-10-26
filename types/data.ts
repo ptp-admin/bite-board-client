@@ -21,7 +21,7 @@ export interface Recipe extends ShoppingListRecipe {
   method: string;
   recipeIngredients?: RecipeIngredient[];
   costPerServe?: number;
-  costAccuracy?: number;
+  costAccuracy: number;
   editable?: boolean;
 }
 

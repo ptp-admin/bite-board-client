@@ -10,9 +10,11 @@
 	import IngredientForm from '../../../components/IngredientForm.svelte';
 	import axios from 'axios';
 	import _ from 'lodash';
+	import { toastStore, type ToastSettings } from '@skeletonlabs/skeleton';
 
 	export let data: PageData;
-
+	console.log(data);
+	
 	let recipe: Recipe = data.recipe;
 
 	// Set defaults for recipe

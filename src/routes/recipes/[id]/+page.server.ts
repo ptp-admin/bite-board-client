@@ -16,21 +16,26 @@ export const load = (async (event) => {
 	const ingredients: Ingredient[] = await response.json();
 
 	if (recipe) {
-		return {recipe: recipe.data, form, ingredients, apiKey: TINY_API_KEY}
+		return { recipe: recipe.data, form, ingredients, apiKey: TINY_API_KEY }
 	} else {
 		throw error(404, 'Not found');
 	}
 }) satisfies PageServerLoad;
 
 export const actions = {
-		delete: async (request) => {
-		const { id } = request.params 
+	delete: async (request) => {
+		const { id } = request.params
 
-		await axiosHandler({
+		const res = await axiosHandler({
 			method: 'delete',
 			route: `/recipes/${id}`
 		});
+		const error = res.data
 
-		throw redirect(307, '/recipes/');
+		if (res.status === 200) {
+			throw redirect(307, '/recipes/');
+		} else {
+			throw error(404, 'error')
+		}
 	}
 };

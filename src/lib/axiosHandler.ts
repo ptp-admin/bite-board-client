@@ -10,6 +10,10 @@ export const axiosHandler = async ({ route, ...queryOpts }: { route: string, [ke
     url: route,
     httpsAgent: new https.Agent({ rejectUnauthorized: false })
   };
-  
-  return await axios(query);
+
+  const data = await axios(query).catch((error) => {
+    return error.response;
+  });
+  return data
+
 };

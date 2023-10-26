@@ -4,8 +4,9 @@
 	import '../app.postcss';
 	import 'iconify-icon';
 	import { page } from '$app/stores';
-	import { AppShell, AppBar, Drawer, drawerStore, LightSwitch } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, Drawer, drawerStore, LightSwitch, Toast } from '@skeletonlabs/skeleton';
 	import Navigation from '../components/Navigation.svelte';
+			
 
 	function drawerOpen(): void {
 		drawerStore.open({});
@@ -20,6 +21,9 @@
 	<hr />
 	<Navigation />
 </Drawer>
+
+<!-- Toast -->
+<Toast />
 
 <!-- App Shell -->
 <AppShell slotSidebarLeft="bg-surface-900/10 w-0 lg:w-64 {classesSidebarLeft}">

@@ -10,10 +10,13 @@
 	import IngredientForm from '../../../components/IngredientForm.svelte';
 	import axios from 'axios';
 	import _ from 'lodash';
+	import type { SuperValidated } from 'sveltekit-superforms/index';
+	import type { NewIngredientSchema } from '../../../schemas';
 
 	export let data: PageData;
 
 	let recipe: Recipe = data.recipe;
+	const ingredientFormData = data.form as SuperValidated<NewIngredientSchema>
 
 	// Set defaults for recipe
 	recipe.editable = false;
@@ -137,7 +140,7 @@
 								{#if ingredient.id}
 									<IngredientForm
 										formId={ingredient.id.toString()}
-										data={data.form}
+										data={ingredientFormData}
 										action={'/ingredients?/update'}
 										{ingredient}
 										{measurementUnitOptions}

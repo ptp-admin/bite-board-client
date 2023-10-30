@@ -13,7 +13,7 @@ export const styleStore = readable({
 	btnSurfaceOutline: 'btn btn-sm variant-outline-surface rounded-lg h-8',
 	btnTertiary: 'btn btn-sm h-8 bg-tertiary-500 rounded-lg',
 	btnTertiaryOutline: 'btn btn-sm h-8 variant-outline-tertiary rounded-lg',
-	card: 'card flex flex-col gap-6 p-6 bg-surface-600/10',
+	card: 'card flex flex-col gap-6 p-6 bg-surface-600/10 shadow-lg',
 	dialog: 'w-full bg-surface-300 rounded-lg',
 	h1: '-mt-1 font-semibold text-2xl',
 	h2: '-mt-1 font-semibold text-xl',

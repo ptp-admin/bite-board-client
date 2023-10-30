@@ -39,6 +39,7 @@ export interface ShoppingListIngredient {
   numberOf?: number;
   unit?: string;
   recipesIds?: number[];
+  checked: boolean;
 }
 
 export interface ShoppingList {
@@ -47,16 +48,5 @@ export interface ShoppingList {
   servings: number,
   cost: number,
   recipes: ShoppingListRecipe[]
-  ingredients: [
-    {
-      id: 1,
-      name: 'Ingredient Name',
-      category: 'Category',
-      derivedCost: 14,
-      numberOf: 500,
-      unit: 'g',
-      recipesIds: [1, 4]
-    }
-  ]
-
+  ingredients: ShoppingListIngredient[]
 }

@@ -134,13 +134,33 @@
 				{#each shoppingList.recipes as recipe, i}
 					<div class={i % 2 == 1 ? 'm-0' : 'bg-surface-600/50 m-0'}>
 						<div class="pl-3 pr-9 py-2 flex flex-row justify-between">
+							<!-- Recipe Name -->
 							<div class="w-8/12">
 								<a href={`/recipes/${recipe.id}`}>
 									{recipe.name}
 								</a>
 							</div>
-							<div class="w-3/12">{recipe.servings || '-'}</div>
-							<div class="w-1/12">
+							<!-- Recipe Servings -->
+							<div class="w-3/12">
+								<form
+									id={`update-recipe-${recipe.id}-servings`}
+									method="POST"
+									action="?/updateRecipeServings"
+									use:enhance={() => {
+										return async ({ result, update }) => {
+											console.log('result', result);
+											
+											invalidateAll();
+										};
+									}}
+								>
+									<input type="hidden" name="shoppingListId" hidden value={shoppingList.id} />
+									<input type="hidden" name="recipeId" hidden value={recipe.id} />
+									<input type="number" name="servings" value={recipe.servings} class="w-20" />
+								</form>
+							</div>
+							<!-- Buttons -->
+							<div class="w-1/12 flex items-end">
 								<form
 									id="delete-recipe-from-shopping-list"
 									method="POST"
@@ -149,14 +169,23 @@
 								>
 									<input type="hidden" name="shoppingListId" hidden value={shoppingList.id} />
 									<input type="hidden" name="recipeId" hidden value={recipe.id} />
+									<!-- Delete Recipe Button -->
 									<button
 										type="submit"
 										form="delete-recipe-from-shopping-list"
-										class={$styleStore.btnError}
+										class={`${$styleStore.btnError} w-8`}
 									>
 										<iconify-icon icon="ic:baseline-delete" />
 									</button>
 								</form>
+								<!-- Save Changes Button -->
+								<button
+									type="submit"
+									form={`update-recipe-${recipe.id}-servings`}
+									class={`${$styleStore.btnPrimary} w-8`}
+								>
+									<iconify-icon icon="ic:baseline-check" />
+								</button>
 							</div>
 						</div>
 					</div>

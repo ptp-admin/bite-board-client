@@ -12,7 +12,7 @@
 		shoppingListRecipes: ShoppingListRecipe[];
 		absentRecipes: Recipe[];
 	}
-	
+
 	let dropdown = false;
 	let showModal = false;
 	let sortedRecipes: SortedRecipes = { shoppingListRecipes: [], absentRecipes: [] };
@@ -142,19 +142,21 @@
 							<div class="w-3/12">{recipe.servings || '-'}</div>
 							<div class="w-1/12">
 								<form
-								id="delete-recipe-from-shopping-list"
-								method="POST"
-								action="?/deleteRecipe"
-								use:enhance
-							>
-								<input type="hidden" name="shoppingListId" hidden value={shoppingList.id} />
-								<input type="hidden" name="recipeId" hidden value={recipe.id} />
-								<button
-									type="submit"
-									form="delete-recipe-from-shopping-list"
-									class={$styleStore.btnTertiaryOutline}
-								/>
-								</form>	
+									id="delete-recipe-from-shopping-list"
+									method="POST"
+									action="?/deleteRecipe"
+									use:enhance
+								>
+									<input type="hidden" name="shoppingListId" hidden value={shoppingList.id} />
+									<input type="hidden" name="recipeId" hidden value={recipe.id} />
+									<button
+										type="submit"
+										form="delete-recipe-from-shopping-list"
+										class={$styleStore.btnError}
+									>
+										<iconify-icon icon="ic:baseline-delete" />
+									</button>
+								</form>
 							</div>
 						</div>
 					</div>

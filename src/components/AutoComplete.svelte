@@ -16,8 +16,7 @@
 	const highlightSearchTerm = (searchTerm: string, inputString: string) => {
 		var regex = new RegExp(searchTerm, "gi");
 		var highlightedString = inputString.replace(regex, `<!-- --><span class="font-bold">$&</span><!-- -->`);
-		console.log(highlightedString);
-		
+
 		return highlightedString;
 	}
 

@@ -3,6 +3,7 @@ import { readable } from "svelte/store"
 // Used mostly for elements which are repeated numerous times across pages
 export const styleStore = readable({
 	badge: 'badge h-6 variant-outline-tertiary',
+	badgeLarge: 'badge variant-outline-tertiary h-8 rounded-2xl px-3',
 	btnError: 'btn btn-sm h-8 rounded-lg bg-error-400',
 	btnErrorOutline: 'btn btn-sm h-8 rounded-lg variant-outline-error',
 	btnPrimary: 'btn btn-sm h-8 bg-primary-500 rounded-lg',

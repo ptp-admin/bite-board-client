@@ -1,24 +1,63 @@
 <script lang="ts">
 	import { styleStore } from '$lib/stores/styles';
-	import type { ShoppingList } from '../../../../types/data';
+	import type { Recipe, ShoppingList, ShoppingListRecipe } from '../../../../types/data';
+	import Modal from '../../../components/Modal.svelte';
 	import type { PageData } from './$types';
+	import { enhance } from '$app/forms';
 	import _ from 'lodash';
-
+	import { invalidateAll } from '$app/navigation';
 	export let data: PageData;
-	const shoppingList: ShoppingList = data.shoppingList;
 
-	const categorisedIngredients = _.chain(shoppingList.ingredients)
-		.groupBy('category')
-		.map((value, key) => {
+	interface SortedRecipes {
+		shoppingListRecipes: ShoppingListRecipe[];
+		absentRecipes: Recipe[];
+	}
+	
+	let dropdown = false;
+	let showModal = false;
+	let sortedRecipes: SortedRecipes = { shoppingListRecipes: [], absentRecipes: [] };
+
+	const recipes = data.recipes;
+
+	$: shoppingList = data.shoppingList;
+	$: shoppingListToAddto = shoppingList.id;
+	$: sortedIngredients = _.chain(shoppingList.ingredients)
+		.map(({ category, ...rest }) => {
 			return {
-				category: key ? key : 'Uncategorised',
-				ingredients: value,
-				checked: false
+				category: category ? category : 'Uncategorised',
+				...rest
 			};
 		})
-		.orderBy('category')
+		.sortBy('category')
 		.sortBy((i) => i.category === 'Uncategorised')
 		.value();
+	$: formattedList = sortedIngredients.reduce((acc, ingredient) => {
+		const ingredientString = `[${ingredient.numberOf} ${ingredient.unit}] ${ingredient.name} \n `;
+		return (acc = acc + ingredientString);
+	}, '');
+
+	const copyContent = async () => {
+		try {
+			await navigator.clipboard.writeText(formattedList);
+			console.log('Content copied to clipboard');
+		} catch (err) {
+			console.error('Failed to copy: ', err);
+		}
+	};
+
+	const addRecipeModal = (shoppingListId: number, sortedRecipes: SortedRecipes) => {
+		shoppingListToAddto = shoppingListId;
+		showModal = true;
+	};
+
+	const sortRecipesForModal = (shoppingListRecipes: ShoppingListRecipe[]) => {
+		const absentRecipes = recipes.filter((recipe: Recipe) => {
+			return !shoppingListRecipes.some((shoppingListRecipe) => {
+				return shoppingListRecipe.id === recipe.id;
+			});
+		});
+		sortedRecipes = { shoppingListRecipes, absentRecipes };
+	};
 </script>
 
 <div class="flex flex-col gap-4">
@@ -31,24 +70,137 @@
 
 	<!-- Shopping List Card -->
 	<div class="{$styleStore.card} p-8">
-		<!-- Shopping List Name -->
+		<div class="flex justify-between">
+			<!-- Shopping List Title -->
+			<h1>{shoppingList.name}</h1>
+
+			<!-- Shopping List Badges -->
+			<div class="flex gap-2">
+				<span class={$styleStore.badgeLarge}>{`${shoppingList.servings} Serves`}</span>
+				<span class={$styleStore.badgeLarge}>{`$${shoppingList.cost} Total`}</span>
+			</div>
+		</div>
+
+		<div class="flex gap-2">
+			<!-- Copy Button -->
+			<button
+				on:click|preventDefault={() => {
+					sortRecipesForModal(shoppingList.recipes);
+					addRecipeModal(shoppingList.id, sortedRecipes);
+				}}
+				class={$styleStore.btnPrimary}>+ Add Recipe to List</button
+			>
+			<button on:click={copyContent} class={$styleStore.btnTertiaryOutline}
+				>Copy List to Clipboard</button
+			>
+		</div>
+
+		<!-- Ingredients -->
 		<div>
-			<h1 class="my-2">{shoppingList.name}</h1>
-		</div>
-		<div class="flex flex-col gap-2">
-			{#each categorisedIngredients as { category, ingredients }}
-				<b>{category}</b>
-				<ul class="flex flex-col gap-2">
-					{#each ingredients as ingredient}
-						<li class="flex gap-3 items-center list-none -ml-2">
-							<input class="checkbox" type="checkbox" bind:checked={ingredient.checked} />
-							<div class={`flex gap-3 ${ingredient.checked ? 'line-through' : ''}`}>
-								<div class="font-semibold">{ingredient.numberOf} {ingredient.unit}</div> {ingredient.name}
+			<div class="pl-3 pr-9 py-2 flex flex-row justify-between">
+				<h2 class="w-5/12 font-semibold">Ingredient</h2>
+				<h2 class="w-3/12 font-semibold">Category</h2>
+			</div>
+			<div class="flex flex-col gap-2">
+				{#each sortedIngredients as ingredient, i}
+					<div class={i % 2 == 1 ? 'm-0' : 'bg-surface-600/50 m-0'}>
+						<div class="pl-3 pr-9 py-2 flex flex-row justify-between">
+							<div class="w-9/12 flex gap-3 items-center list-none">
+								<input class="checkbox" type="checkbox" bind:checked={ingredient.checked} />
+								<div class={`flex gap-3 ${ingredient.checked ? 'line-through' : ''}`}>
+									<span class="font-semibold">{ingredient.numberOf} {ingredient.unit}</span>
+									{ingredient.name}
+								</div>
 							</div>
-						</li>
-					{/each}
-				</ul>
-			{/each}
+							<div class={`w-3/12 ${ingredient.checked ? 'line-through' : ''}`}>
+								{ingredient.category || 'Uncategorised'}
+							</div>
+						</div>
+					</div>
+				{/each}
+			</div>
 		</div>
+
+		<!-- Recipes -->
+		{#if dropdown}
+			<button class={$styleStore.btnSurface} on:click={() => (dropdown = !dropdown)}
+				>Hide Recipes ▲</button
+			>
+			<div class="flex flex-col">
+				<div class="pl-3 pr-9 py-2 flex flex-row justify-between">
+					<h2 class="w-5/12 font-semibold">Recipes</h2>
+					<h2 class="w-3/12 font-semibold">Servings</h2>
+				</div>
+				{#each shoppingList.recipes as recipe, i}
+					<div class={i % 2 == 1 ? 'm-0' : 'bg-surface-600/50 m-0'}>
+						<div class="pl-3 pr-9 py-2 flex flex-row justify-between">
+							<div class="w-9/12">
+								<a href={`/recipes/${recipe.id}`}>
+									{recipe.name}
+								</a>
+							</div>
+							<div class="w-3/12">{recipe.servings || '-'}</div>
+						</div>
+					</div>
+				{/each}
+			</div>
+		{:else}
+			<button class={$styleStore.btnSurface} on:click={() => (dropdown = !dropdown)}
+				>Shopping List includes {shoppingList.recipes.length}
+				{shoppingList.recipes.length > 1 ? 'recipes' : 'recipe'} ▼</button
+			>
+		{/if}
 	</div>
 </div>
+
+<Modal dialogClass="bg-surface-300 rounded-lg" bind:showModal>
+	<h2 slot="header">Add Recipe to Shopping List</h2>
+	<form
+		id="add-recipe-to-shopping-list"
+		method="POST"
+		action="/shopping-lists?/addToShoppingList"
+		use:enhance={() => {
+			return async ({ result, update }) => {
+				showModal = false;
+				invalidateAll();
+			};
+		}}
+	>
+		<input type="hidden" name="shoppingListId" hidden value={shoppingListToAddto} />
+		<!-- <input type="hidden" name="recipeId" hidden value={recipeId} />
+		<input type="hidden" name="servings" hidden value={servings} /> -->
+		{#if sortedRecipes.shoppingListRecipes.length > 0}
+			<h3>
+				{sortedRecipes.shoppingListRecipes.length}
+				Recipe{sortedRecipes.shoppingListRecipes.length > 1 ? 's' : ''} Already in Shopping List:
+			</h3>
+			<ul>
+				{#each sortedRecipes.shoppingListRecipes as shoppingListRecipe}
+					<li class="flex gap-3 items-center list-none -ml-2">
+						{shoppingListRecipe.name}
+					</li>
+				{/each}
+			</ul>
+		{/if}
+		<h3>Add Recipe:</h3>
+		<ul>
+			{#each sortedRecipes.absentRecipes as absentRecipe}
+				<li class="flex gap-3 items-center list-none -ml-2">
+					<input
+						type="radio"
+						class="radio"
+						name="recipe"
+						value={JSON.stringify({ recipeId: absentRecipe.id, servings: absentRecipe.servings })}
+					/>
+					{absentRecipe.name}
+				</li>
+			{/each}
+		</ul>
+	</form>
+	<button
+		type="submit"
+		form="add-recipe-to-shopping-list"
+		slot="button"
+		class={$styleStore.btnPrimary}>Add</button
+	>
+</Modal>

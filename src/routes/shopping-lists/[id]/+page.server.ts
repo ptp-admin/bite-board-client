@@ -7,18 +7,16 @@ export const load = (async (event) => {
 	const shoppingList = await axiosHandler({
 		method: 'get',
 		route: `/shopping-lists/${event.params.id}`
-	})
-  const recipes = await axiosHandler({
-    method: 'get',
-    route: `/recipes/`
-  })
+	});
+	const recipes = await axiosHandler({
+		method: 'get',
+		route: `/recipes/`
+	});
 
-	const shoppingListTyped: ShoppingList = shoppingList.data
+	const shoppingListTyped: ShoppingList = shoppingList.data;
 
-	// console.log(shoppingList.data);
-	
-  // return if successful
-  if (shoppingList) return {shoppingList: shoppingListTyped, recipes: recipes.data.reverse()}
-  // error if not
-  throw error(404, 'Not found');
+	// return if successful
+	if (shoppingList) return { shoppingList: shoppingListTyped, recipes: recipes.data.reverse() };
+	// error if not
+	throw error(404, 'Not found');
 }) satisfies PageServerLoad;

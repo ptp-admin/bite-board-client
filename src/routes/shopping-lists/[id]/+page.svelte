@@ -12,7 +12,7 @@
 		shoppingListRecipes: ShoppingListRecipe[];
 		absentRecipes: Recipe[];
 	}
-	
+
 	let dropdown = false;
 	let showModal = false;
 	let sortedRecipes: SortedRecipes = { shoppingListRecipes: [], absentRecipes: [] };
@@ -128,18 +128,36 @@
 			>
 			<div class="flex flex-col">
 				<div class="pl-3 pr-9 py-2 flex flex-row justify-between">
-					<h2 class="w-5/12 font-semibold">Recipes</h2>
-					<h2 class="w-3/12 font-semibold">Servings</h2>
+					<h2 class="w-8/12 font-semibold">Recipes</h2>
+					<h2 class="w-4/12 font-semibold">Servings</h2>
 				</div>
 				{#each shoppingList.recipes as recipe, i}
 					<div class={i % 2 == 1 ? 'm-0' : 'bg-surface-600/50 m-0'}>
 						<div class="pl-3 pr-9 py-2 flex flex-row justify-between">
-							<div class="w-9/12">
+							<div class="w-8/12">
 								<a href={`/recipes/${recipe.id}`}>
 									{recipe.name}
 								</a>
 							</div>
 							<div class="w-3/12">{recipe.servings || '-'}</div>
+							<div class="w-1/12">
+								<form
+									id="delete-recipe-from-shopping-list"
+									method="POST"
+									action="?/deleteRecipe"
+									use:enhance
+								>
+									<input type="hidden" name="shoppingListId" hidden value={shoppingList.id} />
+									<input type="hidden" name="recipeId" hidden value={recipe.id} />
+									<button
+										type="submit"
+										form="delete-recipe-from-shopping-list"
+										class={$styleStore.btnError}
+									>
+										<iconify-icon icon="ic:baseline-delete" />
+									</button>
+								</form>
+							</div>
 						</div>
 					</div>
 				{/each}
@@ -167,8 +185,6 @@
 		}}
 	>
 		<input type="hidden" name="shoppingListId" hidden value={shoppingListToAddto} />
-		<!-- <input type="hidden" name="recipeId" hidden value={recipeId} />
-		<input type="hidden" name="servings" hidden value={servings} /> -->
 		{#if sortedRecipes.shoppingListRecipes.length > 0}
 			<h3>
 				{sortedRecipes.shoppingListRecipes.length}

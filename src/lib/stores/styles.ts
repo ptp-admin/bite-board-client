@@ -2,7 +2,8 @@ import { readable } from "svelte/store"
 
 // Used mostly for elements which are repeated numerous times across pages
 export const styleStore = readable({
-	badge: 'badge h-5 variant-outline-tertiary',
+	badge: 'badge h-6 variant-outline-tertiary',
+	badgeLarge: 'badge variant-outline-tertiary h-8 rounded-2xl px-3',
 	btnError: 'btn btn-sm h-8 rounded-lg bg-error-400',
 	btnErrorOutline: 'btn btn-sm h-8 rounded-lg variant-outline-error',
 	btnPrimary: 'btn btn-sm h-8 bg-primary-500 rounded-lg',
@@ -13,7 +14,7 @@ export const styleStore = readable({
 	btnSurfaceOutline: 'btn btn-sm variant-outline-surface rounded-lg h-8',
 	btnTertiary: 'btn btn-sm h-8 bg-tertiary-500 rounded-lg',
 	btnTertiaryOutline: 'btn btn-sm h-8 variant-outline-tertiary rounded-lg',
-	card: 'card flex flex-col gap-3 p-4 bg-surface-600/10',
+	card: 'card flex flex-col gap-6 p-6 bg-surface-600/10 shadow-lg',
 	dialog: 'w-full bg-surface-300 rounded-lg',
 	h1: '-mt-1 font-semibold text-2xl',
 	h2: '-mt-1 font-semibold text-xl',

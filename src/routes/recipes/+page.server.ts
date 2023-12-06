@@ -11,8 +11,12 @@ export const load = (async () => {
     method: 'get',
     route: `/recipes/`
   })
+	const shoppingLists = await axiosHandler({
+    method: 'get',
+    route: `/shopping-lists/`
+  })
   // return if successful
-  if (recipes) return {recipes: recipes.data.reverse()}
+  if (recipes && shoppingLists) return {recipes: recipes.data.reverse(), shoppingLists: shoppingLists.data.reverse()}
   // error if not
   throw error(404, 'Not found');
 }) satisfies PageServerLoad;
@@ -75,5 +79,19 @@ export const actions = {
 		})
 
 		return { success: true, form, recipe: response.data };
+	},
+
+	addToShoppingList: async ({request}) => {
+		const data = await request.formData();
+		const recipeId = data.get('recipeId');
+		const servings = data.get('servings');
+		const shoppingListId = data.get('shoppingListId');
+		
+		const response = await axiosHandler({
+			method: 'post',
+			route: `/shopping-lists/${shoppingListId}/recipes/`,
+			data: {recipeId, servings}
+		});
+		return { success: true };
 	}
 };

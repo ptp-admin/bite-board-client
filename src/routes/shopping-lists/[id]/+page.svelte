@@ -6,6 +6,7 @@
 	import { enhance } from '$app/forms';
 	import _ from 'lodash';
 	import { invalidateAll } from '$app/navigation';
+	import DeleteShoppingListRecipeButton from '../../../components/DeleteShoppingListRecipeButton.svelte';
 	export let data: PageData;
 
 	interface SortedRecipes {
@@ -133,14 +134,15 @@
 				</div>
 				{#each shoppingList.recipes as recipe, i}
 					<div class={i % 2 == 1 ? 'm-0' : 'bg-surface-600/50 m-0'}>
-						<div class="pl-3 pr-9 py-2 flex flex-row justify-between">
+						<div class="pl-3 pr-3 py-2 flex flex-row justify-between">
 							<!-- Recipe Name -->
-							<div class="w-8/12">
+							<div class="w-8/12 flex items-center">
 								<a href={`/recipes/${recipe.id}`}>
 									{recipe.name}
 								</a>
 							</div>
-							<!-- Recipe Servings -->
+							<div />
+							<!-- Recipe Servings [Editable State] -->
 							<div class="w-3/12">
 								<form
 									id={`update-recipe-${recipe.id}-servings`}
@@ -149,7 +151,7 @@
 									use:enhance={() => {
 										return async ({ result, update }) => {
 											console.log('result', result);
-											
+
 											invalidateAll();
 										};
 									}}
@@ -159,25 +161,11 @@
 									<input type="number" name="servings" value={recipe.servings} class="w-20" />
 								</form>
 							</div>
-							<!-- Buttons -->
+							<!-- Buttons  [Editable State] -->
 							<div class="w-1/12 flex items-end">
-								<form
-									id="delete-recipe-from-shopping-list"
-									method="POST"
-									action="?/deleteRecipe"
-									use:enhance
-								>
-									<input type="hidden" name="shoppingListId" hidden value={shoppingList.id} />
-									<input type="hidden" name="recipeId" hidden value={recipe.id} />
-									<!-- Delete Recipe Button -->
-									<button
-										type="submit"
-										form="delete-recipe-from-shopping-list"
-										class={`${$styleStore.btnError} w-8`}
-									>
-										<iconify-icon icon="ic:baseline-delete" />
-									</button>
-								</form>
+								<!-- Delete Recipe Button -->
+								<DeleteShoppingListRecipeButton recipe={recipe} shoppingList={shoppingList} />
+
 								<!-- Save Changes Button -->
 								<button
 									type="submit"

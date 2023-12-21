@@ -36,12 +36,12 @@
 <div class="flex flex-col gap-8">
 	<div class="flex flex-col gap-4">
 		<h1>Shopping Lists</h1>
-		<!-- <a href="/shopping-lists/add">
+		<a href="/shopping-lists/add">
             <button class={$styleStore.btnPrimary}>
                 <iconify-icon icon="ic:baseline-plus" />
                 Create Shopping List
             </button>
-        </a> -->
+        </a>
 	</div>
 
 	<div class="grid md:grid-cols-2 lg:grid-cols-2 gap-8">

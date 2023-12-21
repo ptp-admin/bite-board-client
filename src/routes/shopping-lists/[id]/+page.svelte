@@ -6,13 +6,14 @@
 	import { enhance } from '$app/forms';
 	import _ from 'lodash';
 	import { invalidateAll } from '$app/navigation';
+	import DeleteShoppingListRecipeButton from '../../../components/DeleteShoppingListRecipeButton.svelte';
 	export let data: PageData;
 
 	interface SortedRecipes {
 		shoppingListRecipes: ShoppingListRecipe[];
 		absentRecipes: Recipe[];
 	}
-	
+
 	let dropdown = false;
 	let showModal = false;
 	let sortedRecipes: SortedRecipes = { shoppingListRecipes: [], absentRecipes: [] };
@@ -128,18 +129,52 @@
 			>
 			<div class="flex flex-col">
 				<div class="pl-3 pr-9 py-2 flex flex-row justify-between">
-					<h2 class="w-5/12 font-semibold">Recipes</h2>
-					<h2 class="w-3/12 font-semibold">Servings</h2>
+					<h2 class="w-8/12 font-semibold">Recipes</h2>
+					<h2 class="w-4/12 font-semibold">Servings</h2>
 				</div>
 				{#each shoppingList.recipes as recipe, i}
 					<div class={i % 2 == 1 ? 'm-0' : 'bg-surface-600/50 m-0'}>
-						<div class="pl-3 pr-9 py-2 flex flex-row justify-between">
-							<div class="w-9/12">
+						<div class="pl-3 pr-3 py-2 flex flex-row justify-between">
+							<!-- Recipe Name -->
+							<div class="w-8/12 flex items-center">
 								<a href={`/recipes/${recipe.id}`}>
 									{recipe.name}
 								</a>
 							</div>
-							<div class="w-3/12">{recipe.servings || '-'}</div>
+							<div />
+							<!-- Recipe Servings [Editable State] -->
+							<div class="w-3/12">
+								<form
+									id={`update-recipe-${recipe.id}-servings`}
+									method="POST"
+									action="?/updateRecipeServings"
+									use:enhance={() => {
+										return async ({ result, update }) => {
+											console.log('result', result);
+
+											invalidateAll();
+										};
+									}}
+								>
+									<input type="hidden" name="shoppingListId" hidden value={shoppingList.id} />
+									<input type="hidden" name="recipeId" hidden value={recipe.id} />
+									<input type="number" name="servings" value={recipe.servings} class="w-20" />
+								</form>
+							</div>
+							<!-- Buttons  [Editable State] -->
+							<div class="w-1/12 flex items-end">
+								<!-- Delete Recipe Button -->
+								<DeleteShoppingListRecipeButton recipe={recipe} shoppingList={shoppingList} />
+
+								<!-- Save Changes Button -->
+								<button
+									type="submit"
+									form={`update-recipe-${recipe.id}-servings`}
+									class={`${$styleStore.btnPrimary} w-8`}
+								>
+									<iconify-icon icon="ic:baseline-check" />
+								</button>
+							</div>
 						</div>
 					</div>
 				{/each}
@@ -167,8 +202,6 @@
 		}}
 	>
 		<input type="hidden" name="shoppingListId" hidden value={shoppingListToAddto} />
-		<!-- <input type="hidden" name="recipeId" hidden value={recipeId} />
-		<input type="hidden" name="servings" hidden value={servings} /> -->
 		{#if sortedRecipes.shoppingListRecipes.length > 0}
 			<h3>
 				{sortedRecipes.shoppingListRecipes.length}

@@ -38,12 +38,7 @@
 	}, '');
 
 	const copyContent = async () => {
-		try {
-			await navigator.clipboard.writeText(formattedList);
-			console.log('Content copied to clipboard');
-		} catch (err) {
-			console.error('Failed to copy: ', err);
-		}
+		await navigator.clipboard.writeText(formattedList);
 	};
 
 	const addRecipeModal = (shoppingListId: number, sortedRecipes: SortedRecipes) => {
@@ -150,8 +145,6 @@
 									action="?/updateRecipeServings"
 									use:enhance={() => {
 										return async ({ result, update }) => {
-											console.log('result', result);
-
 											invalidateAll();
 										};
 									}}

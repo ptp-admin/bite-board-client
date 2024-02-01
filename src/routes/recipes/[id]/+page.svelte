@@ -63,6 +63,8 @@
 
 <div class="flex flex-col gap-4">
 	{#if !recipe.editable}
+		<!-- View Recipe -->
+
 		<!-- Breadcrumbs -->
 		<ol class="breadcrumb m-0">
 			<li class="crumb"><a class="anchor" href="/recipes">Recipes</a></li>
@@ -205,6 +207,8 @@
 			</div>
 		</div>
 	{:else}
+		<!-- Edit Recipe -->
+
 		<!-- Breadcrumbs -->
 		<ol class="breadcrumb m-0">
 			<li class="crumb"><a class="anchor" href="/recipes">Recipes</a></li>
